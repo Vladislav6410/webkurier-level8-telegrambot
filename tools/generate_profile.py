@@ -1,7 +1,7 @@
 import telebot
 import logging
-
-# Замените на свой токен и Telegram ID администратора
+Id: 7879314881
+Lang:ru
 in BOT TOKEN:print("7760997174:AAHFS_BpIMekNheOlU82M4WZ7qCxRxusFj4")exit()
 ADMIN_IDS = [7760997174]  # Ваш Telegram ID
 @bot.message_handler(commands=['myid'])
