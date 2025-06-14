@@ -1,41 +1,87 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>WebKurier Admin Panel</title>
-
-    <!-- Telegram SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-    <!-- Подключаем скрипт активности панели -->
-    <script src="admin.js"></script>
-
-    <style>
-        body {
-            font-family: sans-serif;
-            padding: 20px;
-            background: #f4f4f4;
-        }
-
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>WebKurier Admin Panel</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: var(--tg-theme-bg-color, #f4f4f4);
+      color: var(--tg-theme-text-color, #222);
+    }
+    .container {
+      background: var(--tg-theme-secondary-bg-color, #fff);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.05);
+      transition: all 0.3s ease-in-out;
+    }
+    .menu-button {
+      margin: 5px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      background-color: var(--tg-theme-button-color, #0088cc);
+      color: var(--tg-theme-button-text-color, #fff);
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s ease;
+    }
+    .menu-button:hover, .menu-button:focus {
+      background-color: #0077b6;
+      outline: none;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--tg-theme-secondary-bg-color, #222);
+      color: var(--tg-theme-text-color, #fff);
+      padding: 10px 20px;
+      border-radius: 5px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 1000;
+    }
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Добро пожаловать, администратор WebKurier</h2>
-        <p>Ваш Telegram ID: <span id="user_id">загрузка...</span></p>
-    </div>
+  <div class="container">
+    <h2><strong>Добро пожаловать, администратор WebKurier</strong></h2>
+    <p>Ваш Telegram ID: <span id="user_id">загрузка...</span></p>
+    <button class="menu-button" aria-label="Пользователи" onclick="showToast('Пользователи загружены')">👤 Пользователи</button>
+    <button class="menu-button" aria-label="Активность" onclick="showToast('Активность обновлена')">📊 Активность</button>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite">...</div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+  <script>
+    // Вся инициализация после полной загрузки DOM
+    document.addEventListener("DOMContentLoaded", () => {
+      // Проверяем, доступен ли объект Telegram WebApp
+      let userId = "Неизвестно";
+      if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
+        Telegram.WebApp.expand();
+        userId = Telegram.WebApp.initDataUnsafe.user.id || "Неизвестно";
+      }
+      document.getElementById('user_id').innerText = userId;
 
-        document.getElementById('user_id').innerText =
-            tg.initDataUnsafe.user?.id || "Неизвестно";
-    </script>
+      showToast("WebKurier активна");
+    });
+
+    // Функция показа toast-уведомления
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2000);
+    }
+  </script>
 </body>
 </html>
