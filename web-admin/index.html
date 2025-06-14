@@ -1,32 +1,41 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>WebKurier Admin Panel</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      background: #f4f4f4;
-    }
-    .container {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>WebKurier Admin Panel</title>
+
+    <!-- Telegram SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Подключаем скрипт активности панели -->
+    <script src="admin.js"></script>
+
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            background: #f4f4f4;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Добро пожаловать, администратор WebKurier</h2>
-    <p>Ваш Telegram ID: <span id="user_id">загрузка...</span></p>
-  </div>
+    <div class="container">
+        <h2>Добро пожаловать, администратор WebKurier</h2>
+        <p>Ваш Telegram ID: <span id="user_id">загрузка...</span></p>
+    </div>
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-    document.getElementById('user_id').innerText = tg.initDataUnsafe.user?.id || "Неизвестно";
-  </script>
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        document.getElementById('user_id').innerText =
+            tg.initDataUnsafe.user?.id || "Неизвестно";
+    </script>
 </body>
 </html>
