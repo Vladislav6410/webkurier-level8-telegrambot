@@ -83,7 +83,13 @@
       setTimeout(() => toast.classList.remove("show"), 2000);
     }
  </script>
-<script type="module" src="roles/auth-check.js"></script><!-- WebCoin Wallet Module -->
+<script type="module" src="roles/auth-check.js"></script><!-- WebCoin Wallet UI -->
+<div id="webcoin-wallet" style="padding: 10px; border: 1px solid #ccc; margin: 20px 0; background: #f9f9f9;">
+  <h3>💰 WebCoin Кошелёк</h3>
+  <p>Пользователь: <span id="wallet-username">Гость</span></p>
+  <p>Баланс: <span id="wallet-balance">0</span> WebCoin</p>
+  <button id="wallet-add-btn">+10 Монет</button>
+</div>WebCoin Wallet Module -->
 <script src="./webcoin/wallet/wallet.js"></script>
 <script src="./webcoin/wallet/wallet-ui.js"></script>
 </body>
