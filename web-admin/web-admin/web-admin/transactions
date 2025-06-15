@@ -1,0 +1,8 @@
+export const TransactionLog = {
+  logs: [],
+  add(entry) {
+    const time = new Date().toISOString();
+    this.logs.push({ time, ...entry });
+    console.log(`[LOG]`, entry);
+  }
+};
