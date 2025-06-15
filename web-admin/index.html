@@ -56,41 +56,51 @@
   <div class="container">
     <h2><strong>Добро пожаловать, администратор WebKurier</strong></h2>
     <p>Ваш Telegram ID: <span id="user_id">загрузка...</span></p>
-    <button class="menu-button" aria-label="Пользователи" onclick="showToast('Пользователи загружены')">👤 Пользователи</button>
-    <button class="menu-button" aria-label="Активность" onclick="showToast('Активность обновлена')">📊 Активность</button>
+    <button class="menu-button" aria-label="Пользователи" onclick="window.showToast('Пользователи загружены')">👤 Пользователи</button>
+    <button class="menu-button" aria-label="Активность" onclick="window.showToast('Активность обновлена')">📊 Активность</button>
   </div>
+
   <div id="toast" class="toast" role="status" aria-live="polite">...</div>
 
+  <!-- WebCoin Wallet UI -->
+  <div id="webcoin-wallet" style="padding: 10px; border: 1px solid #ccc; margin: 20px 0; background: #f9f9f9;">
+    <h3>💰 WebCoin Кошелёк</h3>
+    <p>Пользователь: <span id="wallet-username">Гость</span></p>
+    <p>Баланс: <span id="wallet-balance">0</span> WebCoin</p>
+    <button id="wallet-add-btn">+10 Монет</button>
+  </div>
+
+  <!-- Инициализация WebApp и глобального toast -->
   <script>
-    // Вся инициализация после полной загрузки DOM
+    // Функция глобального toast
+    window.showToast = function(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2000);
+    };
+
     document.addEventListener("DOMContentLoaded", () => {
-      // Проверяем, доступен ли объект Telegram WebApp
+      // Проверка доступности Telegram WebApp
       let userId = "Неизвестно";
-      if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
+      if (
+        window.Telegram &&
+        Telegram.WebApp &&
+        Telegram.WebApp.initDataUnsafe &&
+        Telegram.WebApp.initDataUnsafe.user
+      ) {
         Telegram.WebApp.expand();
         userId = Telegram.WebApp.initDataUnsafe.user.id || "Неизвестно";
       }
       document.getElementById('user_id').innerText = userId;
 
-      showToast("WebKurier активна");
+      window.showToast("WebKurier активна");
     });
+  </script>
 
-    // Функция показа toast-уведомления
-    function showToast(message) {
-      const toast = document.getElementById("toast");
-      toast.textContent = message;
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 2000);
-    }
- </script>
-<script type="module" src="roles/auth-check.js"></script><!-- WebCoin Wallet UI -->
-<div id="webcoin-wallet" style="padding: 10px; border: 1px solid #ccc; margin: 20px 0; background: #f9f9f9;">
-  <h3>💰 WebCoin Кошелёк</h3>
-  <p>Пользователь: <span id="wallet-username">Гость</span></p>
-  <p>Баланс: <span id="wallet-balance">0</span> WebCoin</p>
-  <button id="wallet-add-btn">+10 Монет</button>
-</div>WebCoin Wallet Module -->
-<script src="./webcoin/wallet/wallet.js"></script>
-<script src="./webcoin/wallet/wallet-ui.js"></script>
+  <!-- Подключение модулей -->
+  <script type="module" src="roles/auth-check.js"></script>
+  <script type="module" src="./webcoin/wallet/wallet.js"></script>
+  <script type="module" src="./webcoin/wallet/wallet-ui.js"></script>
 </body>
 </html>
