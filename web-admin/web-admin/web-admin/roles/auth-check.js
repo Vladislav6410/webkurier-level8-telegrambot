@@ -23,4 +23,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Показать тост
   showToast(`Ваша роль: ${role}`);
+});// Обновление UI с ролью
+function showRole(role) {
+  const el = document.getElementById("user-role");
+  if (el) {
+    el.textContent = role;
+  }
+}
+
+// Проверка и отображение роли (выполняется при загрузке)
+window.addEventListener("DOMContentLoaded", () => {
+  const userId = localStorage.getItem("telegram_id") || "0";
+  const role = getRoleById(userId);
+  showRole(role);
 });
