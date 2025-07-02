@@ -4,6 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>WebKurier Live</title>
+
+  <!-- ✅ Подключение Telegram WebApp -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <!-- ✅ Мета-токен (если требуется) -->
+  <!-- ВСТАВЬ СЮДА ТОКЕН ЕСЛИ НУЖНО ДЛЯ ВЕРИФИКАЦИИ -->
+  <!-- <meta name="telegram-token" content="ВАШ_ТОКЕН_ЗДЕСЬ"> -->
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -12,9 +20,11 @@
       margin: 0;
       padding: 20px;
     }
+
     h1, h2, h3 {
       color: #2c3e50;
     }
+
     .block {
       background: #fff;
       padding: 20px;
@@ -22,6 +32,7 @@
       margin-bottom: 40px;
       box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
+
     pre {
       white-space: pre-wrap;
       background: #f9f9f9;
@@ -30,6 +41,7 @@
       border: 1px solid #ddd;
       font-family: monospace;
     }
+
     .button {
       background: #2c3e50;
       color: #fff;
@@ -39,10 +51,12 @@
       display: inline-block;
       margin-top: 10px;
     }
+
     .qr-container {
       text-align: center;
       margin-top: 20px;
     }
+
     .qr-container img {
       max-width: 180px;
       border: 1px solid #ccc;
@@ -50,9 +64,6 @@
       background: #fff;
     }
   </style>
-  import telebot
-
-bot = telebot.TeleBot("7760997174:AAHFS_BpIMekNheOlU82M4WZ7qCxRxusFj4")
 </head>
 <body>
 
@@ -89,19 +100,15 @@ bot = telebot.TeleBot("7760997174:AAHFS_BpIMekNheOlU82M4WZ7qCxRxusFj4")
 • Двухъядерная архитектура и кастомизация
     </pre>
 
-    <a class="button" href="docs/webkurier_core_summary.html" target="_blank">📄 Полное описание ядра</a>
+    <a class="button" href="docs/webkurier_core_summary.html" target="_blank">
+      📄 Полное описание ядра
+    </a>
 
     <div class="qr-container">
       <img src="webkurier_qr.png" alt="QR-код для загрузки ядра">
       <p>📲 Отсканируй для загрузки WebKurier Core</p>
     </div>
   </div>
-
-import telebot
-
-bot = telebot.TeleBot("123")
-  </script>
-  -->
 
 </body>
 </html>
