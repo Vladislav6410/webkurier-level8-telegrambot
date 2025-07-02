@@ -1,108 +1,104 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>WebKurier Admin Panel</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WebKurier Live</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #222;
+      margin: 0;
       padding: 20px;
-      background: var(--tg-theme-bg-color, #f4f4f4);
-      color: var(--tg-theme-text-color, #222);
     }
-    .container {
-      background: var(--tg-theme-secondary-bg-color, #fff);
+
+    h1, h2, h3 {
+      color: #2c3e50;
+    }
+
+    .block {
+      background: #fff;
       padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.05);
-      transition: all 0.3s ease-in-out;
+      border-radius: 12px;
+      margin-bottom: 40px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
-    .menu-button {
-      margin: 5px;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 5px;
-      background-color: var(--tg-theme-button-color, #0088cc);
-      color: var(--tg-theme-button-text-color, #fff);
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.2s ease;
+
+    pre {
+      white-space: pre-wrap;
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-family: monospace;
     }
-    .menu-button:hover, .menu-button:focus {
-      background-color: #0077b6;
-      outline: none;
-    }
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--tg-theme-secondary-bg-color, #222);
-      color: var(--tg-theme-text-color, #fff);
+
+    .button {
+      background: #2c3e50;
+      color: #fff;
       padding: 10px 20px;
-      border-radius: 5px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-      z-index: 1000;
+      text-decoration: none;
+      border-radius: 6px;
+      display: inline-block;
+      margin-top: 10px;
     }
-    .toast.show {
-      opacity: 1;
+
+    .qr-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .qr-container img {
+      max-width: 180px;
+      border: 1px solid #ccc;
+      padding: 6px;
+      background: #fff;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2><strong>Добро пожаловать, администратор WebKurier</strong></h2>
-    <p>Ваш Telegram ID: <span id="user_id">загрузка...</span></p>
-    
-    <!-- 🔽 Отображение роли -->
-    <p>Ваша роль: <span id="user-role">гость</span></p>
 
-    <button class="menu-button" aria-label="Пользователи" onclick="window.showToast('Пользователи загружены')">👤 Пользователи</button>
-    <button class="menu-button" aria-label="Активность" onclick="window.showToast('Активность обновлена')">📊 Активность</button>
+  <h1>🚀 Добро пожаловать в WebKurier Live</h1>
+
+  <div class="block">
+    <h2>🧠 Ядро WebKurier Live</h2>
+
+    <h3>📦 Структура ядра</h3>
+    <pre>
+• ОС: Ubuntu Live (ISO-диск)
+• Пользователь: WebCourier (русский язык по умолчанию)
+• Интерфейсы: HTML5, CodeMirror, offline-first
+• Модули: уровни 1–10, Telegram/WhatsApp/AI-интеграции
+• Режим работы: оффлайн с возможностью перехода в онлайн
+    </pre>
+
+    <h3>🛡 Системные модули</h3>
+    <pre>
+• Антивирус: автообнаружение вредоносных ссылок (.ru)
+• Брандмауэр (UFW) с автонастройкой и логированием
+• VPN (WireGuard) с графическим интерфейсом
+• Модуль автообновлений (USB и интернет)
+• Голосовой движок и автоозвучка команд
+• Переводы: мультиязычность через translations.json
+    </pre>
+
+    <h3>⚙️ Дополнительные возможности</h3>
+    <pre>
+• Telegram-интеграция (бот, админка, поддержка)
+• Облачная совместимость (переносимость проекта)
+• Кнопка запуска ISO-уровней вручную
+• Включение/отключение рекламы и публикаций
+• Двухъядерная архитектура и кастомизация
+    </pre>
+
+    <a class="button" href="docs/webkurier_core_summary.html" target="_blank">📄 Полное описание ядра</a>
+
+    <div class="qr-container">
+      <img src="webkurier_qr.png" alt="QR-код для загрузки ядра">
+      <p>📲 Отсканируй для загрузки WebKurier Core</p>
+    </div>
   </div>
 
-  <div id="toast" class="toast" role="status" aria-live="polite">...</div>
-
-  <!-- WebCoin Wallet UI -->
-  <div id="webcoin-wallet" style="padding: 10px; border: 1px solid #ccc; margin: 20px 0; background: #f9f9f9;">
-    <h3>💰 WebCoin Кошелёк</h3>
-    <p>Пользователь: <span id="wallet-username">Гость</span></p>
-    <p>Баланс: <span id="wallet-balance">0</span> WebCoin</p>
-    <button id="wallet-add-btn">+10 Монет</button>
-  </div>
-
-  <!-- Инициализация WebApp и глобального toast -->
-  <script>
-    window.showToast = function(message) {
-      const toast = document.getElementById("toast");
-      toast.textContent = message;
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 2000);
-    };
-
-    document.addEventListener("DOMContentLoaded", () => {
-      let userId = "Неизвестно";
-      if (
-        window.Telegram &&
-        Telegram.WebApp &&
-        Telegram.WebApp.initDataUnsafe &&
-        Telegram.WebApp.initDataUnsafe.user
-      ) {
-        Telegram.WebApp.expand();
-        userId = Telegram.WebApp.initDataUnsafe.user.id || "Неизвестно";
-      }
-      document.getElementById('user_id').innerText = userId;
-      localStorage.setItem('user_id', userId); // 🔐 сохраняем для auth-check.js
-      window.showToast("WebKurier активна");
-    });
-  </script>
-
-  <!-- Подключение JS-модулей -->
-  <script type="module" src="roles/auth-check.js"></script>
-  <script type="module" src="./webcoin/wallet/wallet.js"></script>
-  <script type="module" src="./webcoin/wallet/wallet-ui.js"></script>
 </body>
 </html>
