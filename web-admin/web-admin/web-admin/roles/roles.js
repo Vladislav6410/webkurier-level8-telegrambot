@@ -1,29 +1,17 @@
-// roles.js — базовая ролевая модель
+// === roles.js ===
+// Список ролей и определение роли по Telegram ID
 
-const roles = {
-  admin: {
-    accessLevel: 3,
-    permissions: ['read', 'write', 'delete', 'manageUsers']
-  },
-  client: {
-    accessLevel: 2,
-    permissions: ['read', 'write']
-  },
-  guest: {
-    accessLevel: 1,
-    permissions: ['read']
-  }
+// 🔐 Словарь пользователей и их ролей
+export const roles = {
+  "7760997174": "admin",    // ← замени на свой Telegram ID
+  "987654321": "client",   // ← пример клиента
+  // Другие ID...
 };
 
-// Функция получения роли по user_id (будет заменено на реальные данные)
-function getUserRole(userId) {
-  // Пример: временно фиксированная роль
-  if (userId === '123456789') return 'admin';
-  if (userId === '987654321') return 'client';
-  return 'guest';
-}
-
-// Экспортируем для использования в других скриптах
-if (typeof module !== 'undefined') {
-  module.exports = { roles, getUserRole };
+// 🎭 Функция: получить роль по ID
+export function getUserRole(userId) {
+  if (userId in roles) {
+    return roles[userId];
+  }
+  return "guest";
 }
