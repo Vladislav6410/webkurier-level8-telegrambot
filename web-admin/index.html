@@ -56,6 +56,10 @@
   <div class="container">
     <h2><strong>Добро пожаловать, администратор WebKurier</strong></h2>
     <p>Ваш Telegram ID: <span id="user_id">загрузка...</span></p>
+    
+    <!-- 🔽 Отображение роли -->
+    <p>Ваша роль: <span id="user-role">гость</span></p>
+
     <button class="menu-button" aria-label="Пользователи" onclick="window.showToast('Пользователи загружены')">👤 Пользователи</button>
     <button class="menu-button" aria-label="Активность" onclick="window.showToast('Активность обновлена')">📊 Активность</button>
   </div>
@@ -72,7 +76,6 @@
 
   <!-- Инициализация WebApp и глобального toast -->
   <script>
-    // Функция глобального toast
     window.showToast = function(message) {
       const toast = document.getElementById("toast");
       toast.textContent = message;
@@ -81,7 +84,6 @@
     };
 
     document.addEventListener("DOMContentLoaded", () => {
-      // Проверка доступности Telegram WebApp
       let userId = "Неизвестно";
       if (
         window.Telegram &&
@@ -93,12 +95,12 @@
         userId = Telegram.WebApp.initDataUnsafe.user.id || "Неизвестно";
       }
       document.getElementById('user_id').innerText = userId;
-
+      localStorage.setItem('user_id', userId); // 🔐 сохраняем для auth-check.js
       window.showToast("WebKurier активна");
     });
   </script>
 
-  <!-- Подключение модулей -->
+  <!-- Подключение JS-модулей -->
   <script type="module" src="roles/auth-check.js"></script>
   <script type="module" src="./webcoin/wallet/wallet.js"></script>
   <script type="module" src="./webcoin/wallet/wallet-ui.js"></script>
