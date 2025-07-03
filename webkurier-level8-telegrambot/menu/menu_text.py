@@ -7,8 +7,4 @@ menus = {
     'pl': ["📖 Instrukcja", "📊 Budżet", "📚 Baza Wiedzy"],
     'fr': ["📖 Guide", "📊 Budget", "📚 Base de Connaissances"],
     # добавь другие языки по мере необходимости
-}from menu.menu_text import menus
-
-# пример: получение меню по языку
-lang = 'ru'
-markup = ReplyKeyboardMarkup([[item] for item in menus[lang]], resize_keyboard=True)
+}
