@@ -1,44 +1,59 @@
 from telegram import Update, ReplyKeyboardMarkup
-from telegram.ext import Updater, CommandHandler, CallbackContext
+from telegram.ext import Updater, CommandHandler, CallbackContext, MessageHandler, Filters
 from menu.menu_text import menus  # импорт меню по языкам
 
-# Функция старта бота
+# ✅ Стартовая функция
 def start(update: Update, context: CallbackContext):
     user = update.effective_user
+    user_id = user.id
+    user_lang = user.language_code if user.language_code in menus else 'ru'
 
-    # Получаем язык из Telegram-профиля, если нет — по умолчанию 'ru'
-    lang = user.language_code if user.language_code in menus else 'ru'
-
-    # Формируем клавиатуру
-    keyboard = [[item] for item in menus.get(lang, menus['ru'])]
+    # Генерация клавиатуры
+    keyboard = [[item] for item in menus.get(user_lang, menus['ru'])]
     markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
-    # Приветствие с клавиатурой
-    update.message.reply_text("Привет! Выберите опцию:", reply_markup=markup)
+    # Приветствие
+    update.message.reply_text(f"👋 Привет, {user.first_name or 'друг'}!\nВыберите опцию из меню ниже:", reply_markup=markup)
 
-# Обработка любого текстового сообщения
+# ✅ Обработка текстовых нажатий на кнопки
 def handle_text(update: Update, context: CallbackContext):
     text = update.message.text
-    update.message.reply_text(f"Вы нажали: {text}")
+    response = ""
 
+    if text in menus['ru']:
+        if text == "📖 Инструкция":
+            response = "🔹 Открываю инструкцию для пользователя..."
+        elif text == "📊 Бюджет":
+            response = "💰 Показываю бюджет проекта..."
+        elif text == "📚 База знаний":
+            response = "📘 Загружаю базу знаний..."
+        else:
+            response = f"Вы выбрали: {text}"
+    else:
+        response = f"Вы нажали: {text}"
+
+    update.message.reply_text(response)
+
+# ✅ Главная функция запуска
 def main():
-    # 🔐 Вставь свой токен бота
+    # 🔐 Укажи свой Telegram токен
     TOKEN = 'YOUR_BOT_TOKEN_HERE'
-    
+
     updater = Updater(TOKEN, use_context=True)
     dp = updater.dispatcher
 
-    # Обработчики
+    # Команды
     dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("menu", start))  # ещё одна команда для вызова меню
+    dp.add_handler(CommandHandler("menu", start))
     dp.add_handler(CommandHandler("help", start))
     dp.add_handler(CommandHandler("restart", start))
+    dp.add_handler(CommandHandler("lang", start))  # на будущее — переключение языка
 
-    dp.add_handler(CommandHandler("lang", start))  # переключение языка в будущем
-    from telegram.ext import MessageHandler, Filters
+    # Обработка текста
     dp.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_text))
 
-    # Запуск
+    # Старт
+    print("✅ Бот запущен...")
     updater.start_polling()
     updater.idle()
 
