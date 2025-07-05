@@ -273,14 +273,22 @@
       const coins = parseInt(localStorage.getItem('webcoin') || '0');
       document.getElementById('webcoin-balance').textContent = `Баланс: ${coins} WKC`;
     });
-<script src="engine/dropbox-agent.js" type="module"></script><script type="module">
-  import { dropboxAgent } from './engine/dropbox-agent.js';
+  </script>
 
-  window.addEventListener('beforeunload', (e) => {
-    const balance = localStorage.getItem('webcoin') || '0';
-    const content = `Автосохранение: баланс = ${balance} WKC`;
-    dropboxAgent.save('autosave.txt', content);
-  });<script type="module" src="engine/dropbox-ui.js"></script>
-</script>
+  <!-- Dropbox Agent (модуль) -->
+  <script src="engine/dropbox-agent.js" type="module"></script>
+  <script type="module">
+    import { dropboxAgent } from './engine/dropbox-agent.js';
+
+    window.addEventListener('beforeunload', (e) => {
+      const balance = localStorage.getItem('webcoin') || '0';
+      const content = `Автосохранение: баланс = ${balance} WKC`;
+      dropboxAgent.save('autosave.txt', content);
+    });
+  </script>
+
+  <!-- ВСТАВЛЯЕМЫЙ МОДУЛЬ DROPBOX-UI -->
+  <script type="module" src="engine/dropbox-ui.js"></script>
+
 </body>
 </html>
