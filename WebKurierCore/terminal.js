@@ -1,8 +1,12 @@
 // === terminal.js ===
 // Виртуальный терминал с поддержкой команд и интеграцией с Dropbox-агентом
 
+// --- Импорт агента Dropbox ---
+import { dropboxAgent } from './engine/dropbox-agent.js';
+
 // --- Глобальные переменные ---
 let balance = 0;
+const autoLoadHistory = true; // ← включите/выключите автозагрузку истории
 
 // --- Вспомогательные функции ---
 function printToTerminal(message) {
@@ -73,7 +77,7 @@ async function handleCommand(event) {
         dropboxAgent.list()
           .then(files => {
             if (!files.length) return printToTerminal('📂 Папка Dropbox пуста.');
-            const fileList = files.map(f => '• ' + f.name).join('\n');
+            const fileList = files.map(f => '• ' + (f.name || f)).join('\n');
             printToTerminal(`📁 Файлы в Dropbox:\n${fileList}`);
           })
           .catch(err => printToTerminal(`❌ Ошибка списка: ${err.message || err}`));
@@ -82,15 +86,7 @@ async function handleCommand(event) {
 
       // История Copilot: /history
       case command === '/history': {
-        dropboxAgent.load('dropbox-history.json')
-          .then(text => {
-            if (text) {
-              printToTerminal(`📜 История Copilot:\n${text}`);
-            } else {
-              printToTerminal('❌ История не найдена.');
-            }
-          })
-          .catch(err => printToTerminal(`❌ Ошибка загрузки истории: ${err.message || err}`));
+        loadCopilotHistory();
         break;
       }
 
@@ -138,9 +134,33 @@ help           — показать эту справку`
   }
 }
 
+// --- Загрузка истории Copilot ---
+function loadCopilotHistory() {
+  dropboxAgent.load('dropbox-history.json')
+    .then(text => {
+      if (text) {
+        printToTerminal(`📜 История Copilot:\n${text}`);
+      } else {
+        printToTerminal('❌ История не найдена.');
+      }
+    })
+    .catch(err => printToTerminal(`❌ Ошибка загрузки истории: ${err.message || err}`));
+}
+
 // --- Привязка обработчика к input ---
 document.getElementById('terminal-input').addEventListener('keydown', handleCommand);
 
-// --- Инициализация (опционально) ---
-printToTerminal('🖥️ Виртуальный терминал готов. Введите help для списка команд.');
+// --- Кнопка "История Copilot" ---
+const copilotBtn = document.createElement('button');
+copilotBtn.textContent = '📜 История Copilot';
+copilotBtn.style.margin = '8px 0';
+copilotBtn.onclick = loadCopilotHistory;
+document.getElementById('dropbox-controls').appendChild(copilotBtn);
 
+// --- Автозагрузка истории при старте ---
+if (autoLoadHistory) {
+  loadCopilotHistory();
+}
+
+// --- Инициализация ---
+printToTerminal('🖥️ Виртуальный терминал готов. Введите help для списка команд.');
