@@ -1,4 +1,8 @@
-import { dropboxAgent } from './engine/dropbox-agent.js'; // ← вставить в начало terminal.js
+<div id="dropbox-controls">
+  <button id="save-btn">📤 Сохранить</button>
+  <button id="load-btn">📥 Загрузить</button>
+  <button id="list-btn">📁 Файлы</button>
+</div>import { dropboxAgent } from './engine/dropbox-agent.js'; // ← вставить в начало terminal.js
 
 function handleCommand(e) {
   if (e.key === 'Enter') {
