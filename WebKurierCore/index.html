@@ -6,18 +6,36 @@ import { dropboxAgent } from './engine/dropbox-agent.js';
 
 // --- Глобальные переменные ---
 let balance = 0;
-const autoLoadHistory = true; // ← включите/выключите автозагрузку истории
+const autoLoadHistory = true; // Включите/выключите автозагрузку истории
 
-// --- Вспомогательные функции ---
-function printToTerminal(message) {
-  const output = document.getElementById('terminal-output');
-  output.value += message + '\n';
-  output.scrollTop = output.scrollHeight;
+// --- Вспомогательные функции работы с балансом (можно заменить на свои) ---
+function getBalance() {
+  return balance;
+}
+function setBalance(val) {
+  balance = val;
+}
+function addCoins(n) {
+  setBalance(getBalance() + n);
+}
+function resetCoins() {
+  setBalance(0);
 }
 
-function resetTerminal() {
-  balance = 0;
-  printToTerminal('🔄 Баланс сброшен.');
+// --- Вспомогательные функции для вывода ---
+function printToTerminal(message, isHtml = false) {
+  const output = document.getElementById('terminal-output');
+  if (isHtml) {
+    output.value += message + '\n';
+  } else {
+    output.value += escapeHtml(message) + '\n';
+  }
+  output.scrollTop = output.scrollHeight;
+}
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.innerText = text;
+  return div.innerHTML;
 }
 
 // --- Загрузка истории Copilot ---
@@ -28,12 +46,10 @@ async function loadCopilotHistory() {
       printToTerminal('❌ История не найдена.');
       return;
     }
-    // Если result — это Blob, читаем текст
     if (typeof result === 'object' && result.text) {
       const text = await result.text();
       printToTerminal(`📜 История Copilot:\n${text}`);
     } else {
-      // Если result — это строка
       printToTerminal(`📜 История Copilot:\n${result}`);
     }
   } catch (err) {
@@ -55,6 +71,7 @@ async function handleCommand(event) {
 
   printToTerminal('> ' + command);
 
+  // --- Основной switch по командам ---
   switch (true) {
     // Добавить сумму к балансу: /add 10
     case command.startsWith('/add '): {
@@ -63,8 +80,8 @@ async function handleCommand(event) {
       if (isNaN(amount)) {
         printToTerminal('❌ Неверный формат суммы.');
       } else {
-        balance += amount;
-        printToTerminal(`💰 Баланс увеличен на ${amount}. Текущий баланс: ${balance}.`);
+        addCoins(amount);
+        printToTerminal(`💰 Баланс увеличен на ${amount}. Текущий баланс: ${getBalance()}.`);
       }
       break;
     }
@@ -73,7 +90,7 @@ async function handleCommand(event) {
     case command.startsWith('/save'): {
       const parts = command.split(' ');
       const filename = parts[1] || 'webcoin.txt';
-      const data = `Баланс: ${balance}`;
+      const data = `Баланс: ${getBalance()}`;
       try {
         await dropboxAgent.save(filename, data);
         printToTerminal(`✅ Баланс сохранён в файл "${filename}".`);
@@ -110,7 +127,6 @@ async function handleCommand(event) {
         if (!files || !files.length) {
           printToTerminal('📂 Папка Dropbox пуста.');
         } else {
-          // Поддержка массивов строк и объектов { name }
           const fileList = files.map(f => '• ' + (typeof f === 'string' ? f : f.name)).join('\n');
           printToTerminal(`📁 Файлы в Dropbox:\n${fileList}`);
         }
@@ -128,13 +144,14 @@ async function handleCommand(event) {
 
     // Баланс: /balance
     case command === '/balance': {
-      printToTerminal(`💰 Текущий баланс: ${balance}`);
+      printToTerminal(`💰 Текущий баланс: ${getBalance()}`);
       break;
     }
 
     // Сброс баланса: /reset
     case command === '/reset': {
-      resetTerminal();
+      resetCoins();
+      printToTerminal('🔄 Баланс сброшен.');
       break;
     }
 
@@ -174,19 +191,91 @@ help           — показать эту справку`
 const terminalInput = document.getElementById('terminal-input');
 terminalInput.addEventListener('keydown', handleCommand);
 
-// --- Кнопка "История Copilot" ---
-function addCopilotButton() {
+// --- Кнопки управления Dropbox (если есть блок в HTML) ---
+function addDropboxButtons() {
   const controls = document.getElementById('dropbox-controls');
   if (!controls) return;
-  if (document.getElementById('copilot-history-btn')) return; // Не дублируем кнопку
-  const btn = document.createElement('button');
-  btn.id = 'copilot-history-btn';
-  btn.textContent = '📜 История Copilot';
-  btn.style.margin = '8px 0';
-  btn.onclick = loadCopilotHistory;
-  controls.appendChild(btn);
+
+  // Кнопка "Сохранить"
+  if (!document.getElementById('save-btn')) {
+    const saveBtn = document.createElement('button');
+    saveBtn.id = 'save-btn';
+    saveBtn.textContent = '📤 Сохранить';
+    saveBtn.onclick = async function() {
+      const name = prompt('Имя файла для сохранения:', 'webcoin.txt');
+      if (name) {
+        const content = `Баланс: ${getBalance()}`;
+        try {
+          await dropboxAgent.save(name, content);
+          printToTerminal(`✅ Файл "${name}" сохранён в Dropbox.`);
+        } catch (err) {
+          printToTerminal(`❌ Ошибка сохранения: ${err.message || err}`);
+        }
+      }
+      terminalInput.focus();
+    };
+    controls.appendChild(saveBtn);
+  }
+
+  // Кнопка "Загрузить"
+  if (!document.getElementById('load-btn')) {
+    const loadBtn = document.createElement('button');
+    loadBtn.id = 'load-btn';
+    loadBtn.textContent = '📥 Загрузить';
+    loadBtn.onclick = async function() {
+      const name = prompt('Имя файла для загрузки:', 'webcoin.txt');
+      if (name) {
+        try {
+          const result = await dropboxAgent.load(name);
+          if (result && result.text) {
+            const text = await result.text();
+            printToTerminal(`📥 Файл "${name}" загружен:\n${text}`);
+          } else if (result) {
+            printToTerminal(`📥 Файл "${name}" загружен:\n${result}`);
+          } else {
+            printToTerminal(`❌ Файл "${name}" не найден.`);
+          }
+        } catch (err) {
+          printToTerminal(`❌ Ошибка загрузки: ${err.message || err}`);
+        }
+      }
+      terminalInput.focus();
+    };
+    controls.appendChild(loadBtn);
+  }
+
+  // Кнопка "Файлы"
+  if (!document.getElementById('list-btn')) {
+    const listBtn = document.createElement('button');
+    listBtn.id = 'list-btn';
+    listBtn.textContent = '📁 Файлы';
+    listBtn.onclick = async function() {
+      try {
+        const files = await dropboxAgent.list();
+        if (!files || !files.length) {
+          printToTerminal('📂 Папка Dropbox пуста.');
+        } else {
+          const fileList = files.map(f => '• ' + (typeof f === 'string' ? f : f.name)).join('\n');
+          printToTerminal(`📁 Файлы в Dropbox:\n${fileList}`);
+        }
+      } catch (err) {
+        printToTerminal(`❌ Ошибка списка: ${err.message || err}`);
+      }
+      terminalInput.focus();
+    };
+    controls.appendChild(listBtn);
+  }
+
+  // Кнопка "История Copilot"
+  if (!document.getElementById('copilot-history-btn')) {
+    const btn = document.createElement('button');
+    btn.id = 'copilot-history-btn';
+    btn.textContent = '📜 История Copilot';
+    btn.onclick = loadCopilotHistory;
+    controls.appendChild(btn);
+  }
 }
-addCopilotButton();
+addDropboxButtons();
 
 // --- Автозагрузка истории при старте ---
 if (autoLoadHistory) {
