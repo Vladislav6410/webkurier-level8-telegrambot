@@ -44,4 +44,13 @@ function logToTerminal(message) {
     el.innerHTML += `<div>${message}</div>`;
     el.scrollTop = el.scrollHeight;
   }
-}
+}// === ⏬ [Начало блока: кнопка История Copilot] ===
+document.getElementById('history-btn').addEventListener('click', async () => {
+  const content = await dropboxAgent.load('dropbox-history.json');
+  if (content) {
+    alert('📜 История Copilot:\n\n' + content);
+  } else {
+    alert('❌ История не найдена.');
+  }
+});
+// === ⏫ [Конец блока: кнопка История Copilot] ===
