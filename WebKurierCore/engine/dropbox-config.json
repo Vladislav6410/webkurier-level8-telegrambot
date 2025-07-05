@@ -1,0 +1,7 @@
+{
+  "access_token": "ВСТАВЬ_СЮДА_СВОЙ_DROPBOX_TOKEN",
+  "default_path": "/WebKurierCore/memory/",
+  "default_filename": "webcoin.txt",
+  "auto_save_on_exit": true,
+  "log_enabled": true
+}
