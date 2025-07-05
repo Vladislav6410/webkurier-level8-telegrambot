@@ -1,6 +1,5 @@
-// terminal.js — логика командного терминала WebKurier
+import { dropboxAgent } from './engine/dropbox-agent.js'; // ← вставить в начало terminal.js
 
-// Обработать команду
 function handleCommand(e) {
   if (e.key === 'Enter') {
     const input = document.getElementById('terminal-input');
@@ -19,7 +18,7 @@ function handleCommand(e) {
         break;
 
       case command === 'help':
-        log.innerHTML += `<div>Команды: ping, help, reset, balance, /add [n]</div>`;
+        log.innerHTML += `<div>Команды: ping, help, reset, balance, /add [n], /save [имя], /load [имя], /list</div>`;
         break;
 
       case command === 'reset':
@@ -42,6 +41,23 @@ function handleCommand(e) {
         }
         break;
 
+      case command.startsWith('/save'):
+        const saveParts = command.split(' ');
+        const saveName = saveParts[1] || 'webcoin.txt';
+        const content = `Баланс: ${getBalance()} WKC`;
+        dropboxAgent.save(saveName, content);
+        break;
+
+      case command.startsWith('/load'):
+        const loadParts = command.split(' ');
+        const loadName = loadParts[1] || 'webcoin.txt';
+        dropboxAgent.load(loadName);
+        break;
+
+      case command === '/list':
+        dropboxAgent.list();
+        break;
+
       default:
         log.innerHTML += `<div>Неизвестная команда. Введите help.</div>`;
         break;
@@ -50,9 +66,3 @@ function handleCommand(e) {
     log.scrollTop = log.scrollHeight;
   }
 }
-
-// Установить фокус на input при загрузке
-window.addEventListener('load', () => {
-  const input = document.getElementById('terminal-input');
-  if (input) input.focus();
-});
