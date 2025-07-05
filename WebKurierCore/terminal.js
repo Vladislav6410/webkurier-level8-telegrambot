@@ -1,72 +1,85 @@
-<div id="dropbox-controls">
-  <button id="save-btn">📤 Сохранить</button>
-  <button id="load-btn">📥 Загрузить</button>
-  <button id="list-btn">📁 Файлы</button>
-</div>import { dropboxAgent } from './engine/dropbox-agent.js'; // ← вставить в начало terminal.js
+// === Импорт Dropbox агента ===
+import { dropboxAgent } from './engine/dropbox-agent.js';
 
+// === Функции работы с балансом (заглушки, замените на ваши реализации) ===
+function getBalance() {
+  // Получить баланс (пример)
+  return parseInt(localStorage.getItem('balance') || '0');
+}
+function setBalance(val) {
+  localStorage.setItem('balance', val);
+}
+function addCoins(n) {
+  setBalance(getBalance() + n);
+}
+function resetCoins() {
+  setBalance(0);
+}
+
+// === Функция для вывода в терминал ===
+function printToTerminal(msg, isHtml = false) {
+  const log = document.getElementById('terminal-log');
+  log.innerHTML += isHtml ? `<div>${msg}</div>` : `<div>${escapeHtml(msg)}</div>`;
+  log.scrollTop = log.scrollHeight;
+}
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.innerText = text;
+  return div.innerHTML;
+}
+
+// === Основная функция обработки команд ===
 function handleCommand(e) {
   if (e.key === 'Enter') {
     const input = document.getElementById('terminal-input');
-    const log = document.getElementById('terminal-log');
     const command = input.value.trim();
 
     if (command) {
-      log.innerHTML += `<div>&gt; ${command}</div>`;
+      printToTerminal(`> ${command}`);
       input.value = '';
     }
 
     // Команды терминала
     switch (true) {
       case command === 'ping':
-        log.innerHTML += `<div>Pong 🟢</div>`;
+        printToTerminal('Pong 🟢');
         break;
 
       case command === 'help':
-        log.innerHTML += `<div>Команды: ping, help, reset, balance, /add [n], /save [имя], /load [имя], /list</div>`;
+        printToTerminal('Команды: ping, help, reset, balance, /add [n], /save [имя], /load [имя], /list, /history');
         break;
 
       case command === 'reset':
         resetCoins();
-        log.innerHTML += `<div>Баланс сброшен.</div>`;
+        printToTerminal('Баланс сброшен.');
         break;
 
       case command === 'balance':
-        log.innerHTML += `<div>Баланс: ${getBalance()} WKC</div>`;
+        printToTerminal(`Баланс: ${getBalance()} WKC`);
         break;
 
       case command.startsWith('/add'):
-        const parts = command.split(' ');
-        const num = parseInt(parts[1] || '0');
-        if (isNaN(num) || num <= 0) {
-          log.innerHTML += `<div>Ошибка: укажите корректное число.</div>`;
-        } else {
-          addCoins(num);
-          log.innerHTML += `<div>Добавлено: ${num} WKC</div>`;
+        {
+          const parts = command.split(' ');
+          const num = parseInt(parts[1] || '0');
+          if (isNaN(num) || num <= 0) {
+            printToTerminal('Ошибка: укажите корректное число.');
+          } else {
+            addCoins(num);
+            printToTerminal(`Добавлено: ${num} WKC`);
+          }
         }
         break;
 
       case command.startsWith('/save'):
-        const saveParts = command.split(' ');
-        const saveName = saveParts[1] || 'webcoin.txt';
-        const content = `Баланс: ${getBalance()} WKC`;
-        dropboxAgent.save(saveName, content);
+        {
+          const saveParts = command.split(' ');
+          const saveName = saveParts[1] || 'webcoin.txt';
+          const content = `Баланс: ${getBalance()} WKC`;
+          dropboxAgent.save(saveName, content)
+            .then(() => printToTerminal(`✅ Файл "${saveName}" сохранён в Dropbox.`))
+            .catch(err => printToTerminal(`❌ Ошибка сохранения: ${err.message || err}`));
+        }
         break;
 
-      case command.startsWith('/load'):
-        const loadParts = command.split(' ');
-        const loadName = loadParts[1] || 'webcoin.txt';
-        dropboxAgent.load(loadName);
-        break;
-
-      case command === '/list':
-        dropboxAgent.list();
-        break;
-
-      default:
-        log.innerHTML += `<div>Неизвестная команда. Введите help.</div>`;
-        break;
-    }
-
-    log.scrollTop = log.scrollHeight;
-  }
-}
+      case command.startsWith('/load
