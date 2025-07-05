@@ -4,7 +4,7 @@
 import { Dropbox } from 'https://unpkg.com/dropbox@11.0.4/dist/Dropbox-sdk.min.js';
 
 // 🔐 Вставьте ваш Dropbox access token
-const ACCESS_TOKEN = 'YOUR_DROPBOX_ACCESS_TOKEN_HERE';
+const ACCESS_TOKEN = 'sl.u.AF1NYATDhXiwNRmaOpI1iDBN9gPoBrWNQglC0xNgPkP-jNSQGaYOHPJ1tOrOpCua';
 
 export const dbx = new Dropbox({ accessToken: ACCESS_TOKEN });
 
