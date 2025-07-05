@@ -1,0 +1,22 @@
+{
+  "history": [
+    {
+      "action": "save",
+      "filename": "webcoin.txt",
+      "timestamp": "2025-07-05T18:55:00Z",
+      "status": "success"
+    },
+    {
+      "action": "list",
+      "path": "/WebKurierCore/memory/",
+      "timestamp": "2025-07-05T18:56:00Z",
+      "status": "success"
+    },
+    {
+      "action": "load",
+      "filename": "webcoin.txt",
+      "timestamp": "2025-07-05T18:57:00Z",
+      "status": "success"
+    }
+  ]
+}
