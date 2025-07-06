@@ -3,76 +3,110 @@
 <head>
   <meta charset="UTF-8">
   <title>Выбор участка земли</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    select, input {
-      padding: 8px;
-      margin-bottom: 15px;
-      width: 100%;
-      max-width: 400px;
-    }
-    ul {
-      list-style: none;
-      padding-left: 0;
-    }
-    li {
-      margin-bottom: 5px;
-    }
-    .hidden {
-      display: none;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Выбор участка земли</h1>
+  <div class="container">
+    <h1>Выбор участка земли</h1>
 
-  <label for="area-select">Выберите район:</label><br>
-  <select id="area-select">
-    <option value="">— выберите —</option>
-  </select>
+    <label for="areaSelect">Выберите район:</label>
+    <select id="areaSelect" onchange="onAreaSelect()">
+      <option disabled selected>Загрузка...</option>
+    </select>
 
-  <label for="search">Поиск по объектам:</label><br>
-  <input type="text" id="search" placeholder="Начните вводить...">
+    <label for="search">Поиск по объектам:</label>
+    <input type="text" id="search" placeholder="Начните вводить..." oninput="renderList()">
 
-  <h2>Объекты:</h2>
-  <ul id="object-list"></ul>
+    <div class="list">
+      <ul id="objectList"></ul>
+    </div>
+
+    <div class="pagination" id="pagination" style="display: none;">
+      <button id="prevBtn" onclick="prevPage()">Назад</button>
+      <button id="nextBtn" onclick="nextPage()">Вперёд</button>
+    </div>
+  </div>
 
   <script>
     let data = {};
+    let currentArea = '';
+    let currentPage = 0;
+    const itemsPerPage = 5;
 
-    fetch("areas.json")
+    // Загрузка JSON
+    fetch('data/areas.json')
       .then(response => response.json())
       .then(json => {
         data = json;
-        const areaSelect = document.getElementById("area-select");
-        Object.keys(data).forEach(area => {
-          const option = document.createElement("option");
-          option.value = area;
-          option.textContent = area;
-          areaSelect.appendChild(option);
-        });
+        populateAreaSelect();
+      })
+      .catch(err => {
+        console.error('Ошибка загрузки areas.json:', err);
       });
 
-    document.getElementById("area-select").addEventListener("change", updateObjects);
-    document.getElementById("search").addEventListener("input", updateObjects);
+    function populateAreaSelect() {
+      const select = document.getElementById('areaSelect');
+      select.innerHTML = '<option disabled selected>Выберите район</option>';
+      Object.keys(data).forEach(area => {
+        const option = document.createElement('option');
+        option.value = area;
+        option.textContent = area;
+        select.appendChild(option);
+      });
+    }
 
-    function updateObjects() {
-      const area = document.getElementById("area-select").value;
-      const search = document.getElementById("search").value.toLowerCase();
-      const list = document.getElementById("object-list");
-      list.innerHTML = "";
+    function onAreaSelect() {
+      const select = document.getElementById('areaSelect');
+      currentArea = select.value;
+      currentPage = 0;
+      renderList();
+    }
 
-      if (!area || !data[area]) return;
+    function renderList() {
+      const list = document.getElementById('objectList');
+      const pagination = document.getElementById('pagination');
+      const search = document.getElementById('search').value.toLowerCase();
+      list.innerHTML = '';
 
-      const objects = data[area].filter(obj => obj.toLowerCase().includes(search));
-      objects.forEach(obj => {
-        const li = document.createElement("li");
-        li.textContent = obj;
+      if (!data[currentArea]) return;
+
+      const filtered = data[currentArea].filter(obj =>
+        obj.toLowerCase().includes(search)
+      );
+
+      const sorted = filtered.sort();
+      const start = currentPage * itemsPerPage;
+      const end = start + itemsPerPage;
+      const pageItems = sorted.slice(start, end);
+
+      pageItems.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
         list.appendChild(li);
       });
+
+      pagination.style.display = sorted.length > itemsPerPage ? 'flex' : 'none';
+      document.getElementById('prevBtn').disabled = currentPage === 0;
+      document.getElementById('nextBtn').disabled = end >= sorted.length;
+    }
+
+    function prevPage() {
+      if (currentPage > 0) {
+        currentPage--;
+        renderList();
+      }
+    }
+
+    function nextPage() {
+      const search = document.getElementById('search').value.toLowerCase();
+      const filtered = data[currentArea].filter(obj =>
+        obj.toLowerCase().includes(search)
+      );
+      const maxPage = Math.floor(filtered.length / itemsPerPage);
+      if (currentPage < maxPage) {
+        currentPage++;
+        renderList();
+      }
     }
   </script>
 </body>
