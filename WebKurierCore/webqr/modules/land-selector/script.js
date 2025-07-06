@@ -4,7 +4,7 @@ let currentPage = 0;
 const itemsPerPage = 5;
 
 // Загрузка JSON
-fetch('areas.json')
+fetch('data/areas.json')
   .then(response => response.json())
   .then(json => {
     data = json;
