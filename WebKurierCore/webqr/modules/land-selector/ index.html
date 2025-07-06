@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Выбор участка земли</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    select, input {
+      padding: 8px;
+      margin-bottom: 15px;
+      width: 100%;
+      max-width: 400px;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Выбор участка земли</h1>
+
+  <label for="area-select">Выберите район:</label><br>
+  <select id="area-select">
+    <option value="">— выберите —</option>
+  </select>
+
+  <label for="search">Поиск по объектам:</label><br>
+  <input type="text" id="search" placeholder="Начните вводить...">
+
+  <h2>Объекты:</h2>
+  <ul id="object-list"></ul>
+
+  <script>
+    let data = {};
+
+    fetch("areas.json")
+      .then(response => response.json())
+      .then(json => {
+        data = json;
+        const areaSelect = document.getElementById("area-select");
+        Object.keys(data).forEach(area => {
+          const option = document.createElement("option");
+          option.value = area;
+          option.textContent = area;
+          areaSelect.appendChild(option);
+        });
+      });
+
+    document.getElementById("area-select").addEventListener("change", updateObjects);
+    document.getElementById("search").addEventListener("input", updateObjects);
+
+    function updateObjects() {
+      const area = document.getElementById("area-select").value;
+      const search = document.getElementById("search").value.toLowerCase();
+      const list = document.getElementById("object-list");
+      list.innerHTML = "";
+
+      if (!area || !data[area]) return;
+
+      const objects = data[area].filter(obj => obj.toLowerCase().includes(search));
+      objects.forEach(obj => {
+        const li = document.createElement("li");
+        li.textContent = obj;
+        list.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
