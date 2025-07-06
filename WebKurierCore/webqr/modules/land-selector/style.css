@@ -60,6 +60,10 @@ button:hover {
     border-radius: 4px;
 }
 
+.list li:hover {
+    text-decoration: underline;
+}
+
 .pagination {
     display: flex;
     justify-content: space-between;
@@ -67,8 +71,5 @@ button:hover {
 }
 
 .pagination button {
-    width: 48%;.pagination button {
     width: 48%;
-}
-}
 }
