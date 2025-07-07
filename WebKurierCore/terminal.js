@@ -1,12 +1,14 @@
-// === terminal.js ===
-// Виртуальный терминал с поддержкой команд и интеграцией с Dropbox-агентом
 
-// --- Импорт агента Dropbox ---
+// === terminal.js ===
+// Виртуальный терминал с поддержкой команд, Dropbox и юридического агента
+
+// --- Импорты ---
 import { dropboxAgent } from './engine/dropbox-agent.js';
+import { LegalAgent } from './engine/agents/legal-agent.js';
 
 // --- Глобальные переменные ---
 let balance = 0;
-const autoLoadHistory = true; // ← включите/выключите автозагрузку истории
+const autoLoadHistory = true;
 
 // --- Вспомогательные функции ---
 function printToTerminal(message) {
@@ -26,13 +28,11 @@ async function handleCommand(event) {
     const input = event.target;
     const command = input.value.trim();
     input.value = '';
-
     if (!command) return;
 
     printToTerminal('> ' + command);
 
     switch (true) {
-      // Добавить сумму к балансу: /add 10
       case command.startsWith('/add '): {
         const parts = command.split(' ');
         const amount = parseFloat(parts[1]);
@@ -45,7 +45,6 @@ async function handleCommand(event) {
         break;
       }
 
-      // Сохранить баланс в файл: /save имя.txt
       case command.startsWith('/save'): {
         const parts = command.split(' ');
         const filename = parts[1] || 'webcoin.txt';
@@ -56,10 +55,9 @@ async function handleCommand(event) {
         break;
       }
 
-      // Загрузить файл: /load имя.txt
       case command.startsWith('/load'): {
-        const loadParts = command.split(' ');
-        const loadName = loadParts[1] || 'webcoin.txt';
+        const parts = command.split(' ');
+        const loadName = parts[1] || 'webcoin.txt';
         dropboxAgent.load(loadName)
           .then(text => {
             if (text) {
@@ -72,7 +70,6 @@ async function handleCommand(event) {
         break;
       }
 
-      // Список файлов в Dropbox: /list
       case command === '/list': {
         dropboxAgent.list()
           .then(files => {
@@ -84,48 +81,55 @@ async function handleCommand(event) {
         break;
       }
 
-      // История Copilot: /history
       case command === '/history': {
         loadCopilotHistory();
         break;
       }
 
-      // Баланс: /balance
       case command === '/balance': {
         printToTerminal(`💰 Текущий баланс: ${balance}`);
         break;
       }
 
-      // Сброс баланса: /reset
       case command === '/reset': {
         resetTerminal();
         break;
       }
 
-      // Проверка связи: /ping
       case command === '/ping': {
         printToTerminal('🏓 Pong!');
         break;
       }
 
-      // Справка: help
       case command === 'help': {
         printToTerminal(
 `📝 Доступные команды:
 /add N         — добавить сумму к балансу
-/save [имя]    — сохранить баланс в файл (по умолчанию webcoin.txt)
-/load [имя]    — загрузить файл (по умолчанию webcoin.txt)
+/save [имя]    — сохранить баланс в файл
+/load [имя]    — загрузить файл
 /list          — список файлов в Dropbox
-/history       — показать историю Copilot
-/balance       — показать баланс
-/reset         — сбросить баланс
+/history       — история Copilot
+/balance       — текущий баланс
+/reset         — сброс баланса
 /ping          — проверка связи
-help           — показать эту справку`
-        );
+/legal         — юридический агент
+help           — эта справка`);
         break;
       }
 
-      // Неизвестная команда
+      case command.startsWith('/legal'): {
+        const [, action, ...rest] = command.split(" ");
+        if (action === "analyze") {
+          const text = rest.join(" ");
+          printToTerminal(await LegalAgent.analyze(text));
+        } else if (action === "template") {
+          printToTerminal(LegalAgent.getTemplate(rest[0]));
+        } else {
+          printToTerminal(LegalAgent.help());
+        }
+        break;
+      }
+
       default: {
         printToTerminal('❓ Неизвестная команда. Введите help для списка.');
         break;
@@ -134,7 +138,7 @@ help           — показать эту справку`
   }
 }
 
-// --- Загрузка истории Copilot ---
+// --- Загрузка истории ---
 function loadCopilotHistory() {
   dropboxAgent.load('dropbox-history.json')
     .then(text => {
@@ -147,20 +151,17 @@ function loadCopilotHistory() {
     .catch(err => printToTerminal(`❌ Ошибка загрузки истории: ${err.message || err}`));
 }
 
-// --- Привязка обработчика к input ---
+// --- Привязка обработчиков ---
 document.getElementById('terminal-input').addEventListener('keydown', handleCommand);
 
-// --- Кнопка "История Copilot" ---
 const copilotBtn = document.createElement('button');
 copilotBtn.textContent = '📜 История Copilot';
 copilotBtn.style.margin = '8px 0';
 copilotBtn.onclick = loadCopilotHistory;
 document.getElementById('dropbox-controls').appendChild(copilotBtn);
 
-// --- Автозагрузка истории при старте ---
+// --- Инициализация ---
 if (autoLoadHistory) {
   loadCopilotHistory();
 }
-
-// --- Инициализация ---
 printToTerminal('🖥️ Виртуальный терминал готов. Введите help для списка команд.');
