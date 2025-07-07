@@ -9,8 +9,8 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <!-- ✅ Мета-токен (если требуется) -->
-  <!-- ВСТАВЬ СЮДА ТОКЕН ЕСЛИ НУЖНО ДЛЯ ВЕРИФИКАЦИИ -->
   <meta name="telegram-token" content="токен">
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -108,7 +108,12 @@
       <p>📲 Отсканируй для загрузки WebKurier Core</p>
     </div>
   </div>
-<script type="module" src="./ro
-</html><script type="module" src="./roles/auth-check.js"></script><div id="wallet-container"></div>
+
+  <!-- 🔐 Подключение auth-check (роли) -->
+  <script type="module" src="./roles/auth-check.js"></script>
+
+  <!-- 💰 Контейнер кошелька WebCoin -->
+  <div id="wallet-container"></div>
+
 </body>
 </html>
