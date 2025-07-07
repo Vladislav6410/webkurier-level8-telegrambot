@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>WebKurier Live</title>
 
-  <!-- ✅ Подключение Telegram WebApp -->
+  <!-- ✅ Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-  <!-- ✅ Мета-токен (если требуется) -->
+  <!-- 🔐 Мета-токен (если нужен) -->
   <meta name="telegram-token" content="токен">
 
   <style>
@@ -62,8 +62,13 @@
       padding: 6px;
       background: #fff;
     }
+
+    #wallet-container {
+      margin-top: 30px;
+    }
   </style>
 </head>
+
 <body>
 
   <h1>🚀 Добро пожаловать в WebKurier Live</h1>
@@ -112,9 +117,32 @@
   <!-- 🔐 Подключение auth-check (роли) -->
   <script type="module" src="./roles/auth-check.js"></script>
 
-  <!-- 💰 Контейнер кошелька WebCoin -->
+  <!-- 💰 Подключение кошелька WebCoin -->
+  <script type="module" src="./wallet.js"></script>
+  <script type="module" src="./wallet-ui.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const userId = Telegram.WebApp.initDataUnsafe?.user?.id || 1;
+      const userName = Telegram.WebApp.initDataUnsafe?.user?.first_name || 'Пользователь';
+
+      WebCoinWallet.loadWallet().then(() => {
+        if (!WebCoinWallet.getUser(userId)) {
+          WebCoinWallet.addUser(userId, userName);
+        }
+        renderWalletUI('wallet-container', userId);
+      });
+    });
+  </script>
+
+  <!-- 💱 Обменник и история -->
+  <script type="module" src="./exchanger.js"></script>
+  <script type="module" src="./transactions.js"></script>
+
+  <!-- 💼 Контейнер кошелька -->
   <div id="wallet-container"></div>
 
   <!-- 🧠 Главный управляющий агент -->
-<script type="module" src="./master-agent.js"></script></body>
+  <script type="module" src="./master-agent.js"></script>
+
+</body>
 </html>
