@@ -1,63 +1,56 @@
-// Главный управляющий агент WebKurier
-export const MasterAgent = {
+// engine/agents/master/master-agent.js
+
+const masterAgent = {
   agents: {
-    wallet: './wallet.js',
-    exchanger: './exchanger.js',
-    transactions: './transactions.js',
-    admin: './admin.js'
+    wallet: null,
+    translator: null,
+    engineer: null,
+    dream: null
   },
 
-  status: {},
+  log: (msg) => {
+    console.log(`[MasterAgent] ${msg}`);
+  },
 
-  async init() {
-    console.log('🧠 MasterAgent запущен');
+  init: () => {
+    masterAgent.log("Инициализация агента...");
 
-    for (const [name, path] of Object.entries(this.agents)) {
-      try {
-        const module = await import(path);
-        this.status[name] = '🟢 активен';
-        console.log(`✅ Агент ${name} подключен: ${path}`);
+    try {
+      masterAgent.agents.wallet = require('../wallet/wallet-agent.js');
+      masterAgent.agents.translator = require('../translator/translator-agent.js');
+      masterAgent.agents.engineer = require('../../engineer.js');
+      masterAgent.agents.dream = require('../../dream.js');
 
-        // Автозапуск, если есть функция init
-        if (typeof module.init === 'function') {
-          await module.init();
-          console.log(`🚀 Агент ${name} инициализирован`);
-        }
-
-      } catch (err) {
-        this.status[name] = '🔴 ошибка';
-        console.error(`❌ Ошибка при загрузке ${name}:`, err);
-      }
+      masterAgent.log("Агенты успешно подключены.");
+    } catch (e) {
+      masterAgent.log("Ошибка при подключении агентов: " + e.message);
     }
   },
 
-  report() {
-    console.log('📋 Статус агентов:');
-    for (const [agent, state] of Object.entries(this.status)) {
-      console.log(`• ${agent}: ${state}`);
+  listAgents: () => {
+    return Object.keys(masterAgent.agents).map((name) => {
+      const status = masterAgent.agents[name] ? "✅ подключен" : "❌ отсутствует";
+      return `${name} — ${status}`;
+    }).join("\n");
+  },
+
+  run: (agentName) => {
+    if (masterAgent.agents[agentName] && masterAgent.agents[agentName].run) {
+      masterAgent.agents[agentName].run();
+      masterAgent.log(`Агент "${agentName}" запущен.`);
+    } else {
+      masterAgent.log(`Агент "${agentName}" не найден или не поддерживает запуск.`);
     }
   },
 
-  reload(agentName) {
-    if (!(agentName in this.agents)) {
-      console.warn(`⚠️ Агент ${agentName} не найден`);
-      return;
+  stop: (agentName) => {
+    if (masterAgent.agents[agentName] && masterAgent.agents[agentName].stop) {
+      masterAgent.agents[agentName].stop();
+      masterAgent.log(`Агент "${agentName}" остановлен.`);
+    } else {
+      masterAgent.log(`Агент "${agentName}" не найден или не поддерживает остановку.`);
     }
-
-    import(`${this.agents[agentName]}?t=${Date.now()}`)
-      .then((module) => {
-        console.log(`🔄 Агент ${agentName} перезагружен`);
-        if (typeof module.init === 'function') {
-          module.init();
-        }
-        this.status[agentName] = '🟢 активен';
-      })
-      .catch((err) => {
-        console.error(`❌ Ошибка при перезагрузке ${agentName}:`, err);
-        this.status[agentName] = '🔴 ошибка';
-      });
   }
 };
 
-// Автозапуск MasterAgent при загрузке страницы
-MasterAgent.init();
+module.exports = masterAgent;
