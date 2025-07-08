@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Выбор языка</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f0f0f0;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 24px;
+    }
+    .flags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+    }
+    .flag {
+      width: 100px;
+      cursor: pointer;
+    }
+    .flag img {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease;
+    }
+    .flag img:hover {
+      transform: scale(1.1);
+    }
+    .label {
+      margin-top: 5px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌐 Пожалуйста, выберите язык</h1>
+  <div class="flags">
+
+    <!-- 🇷🇺 Russian -->
+    <div class="flag" onclick="selectLang('ru')">
+      <img src="https://flagcdn.com/w80/ru.png" alt="Русский">
+      <div class="label">Русский</div>
+    </div>
+
+    <!-- 🇬🇧 English -->
+    <div class="flag" onclick="selectLang('en')">
+      <img src="https://flagcdn.com/w80/gb.png" alt="English">
+      <div class="label">English</div>
+    </div>
+
+    <!-- 🇩🇪 Deutsch -->
+    <div class="flag" onclick="selectLang('de')">
+      <img src="https://flagcdn.com/w80/de.png" alt="Deutsch">
+      <div class="label">Deutsch</div>
+    </div>
+
+    <!-- 🇵🇱 Polski -->
+    <div class="flag" onclick="selectLang('pl')">
+      <img src="https://flagcdn.com/w80/pl.png" alt="Polski">
+      <div class="label">Polski</div>
+    </div>
+
+    <!-- 🇫🇷 Français -->
+    <div class="flag" onclick="selectLang('fr')">
+      <img src="https://flagcdn.com/w80/fr.png" alt="Français">
+      <div class="label">Français</div>
+    </div>
+
+    <!-- 🇨🇿 Čeština -->
+    <div class="flag" onclick="selectLang('cs')">
+      <img src="https://flagcdn.com/w80/cz.png" alt="Čeština">
+      <div class="label">Čeština</div>
+    </div>
+
+    <!-- 🇪🇸 Español -->
+    <div class="flag" onclick="selectLang('es')">
+      <img src="https://flagcdn.com/w80/es.png" alt="Español">
+      <div class="label">Español</div>
+    </div>
+
+    <!-- 🇮🇹 Italiano -->
+    <div class="flag" onclick="selectLang('it')">
+      <img src="https://flagcdn.com/w80/it.png" alt="Italiano">
+      <div class="label">Italiano</div>
+    </div>
+
+    <!-- 🇺🇦 Українська -->
+    <div class="flag" onclick="selectLang('uk')">
+      <img src="https://flagcdn.com/w80/ua.png" alt="Українська">
+      <div class="label">Українська</div>
+    </div>
+
+    <!-- добавь остальные по аналогии... -->
+
+  </div>
+
+  <script>
+    function selectLang(code) {
+      localStorage.setItem('lang', code); // сохраняем в браузере
+      window.location.href = '../index.html?lang=' + code; // переход на главную с языком
+    }
+  </script>
+</body>
+</html>
