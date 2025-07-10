@@ -1,0 +1,14 @@
+{
+  "header": {
+    "name": "🔝 Шапка сайта",
+    "html": "<header style=\"background:#eee;padding:20px;\"><h1>Заголовок сайта</h1></header>"
+  },
+  "card": {
+    "name": "📦 Карточка товара",
+    "html": "<div style=\"border:1px solid #ccc;padding:10px;width:300px;\"><h3>Название товара</h3><p>Описание товара...</p><button>Купить</button></div>"
+  },
+  "grid": {
+    "name": "📐 Сетка блоков",
+    "html": "<div style=\"display:grid;grid-template-columns:1fr 1fr;gap:10px;\"><div style=\"background:#eee;padding:10px;\">Блок 1</div><div style=\"background:#ddd;padding:10px;\">Блок 2</div></div>"
+  }
+}
