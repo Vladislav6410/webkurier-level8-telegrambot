@@ -44,7 +44,7 @@
   <h1>🌐 Пожалуйста, выберите язык</h1>
   <div class="flags">
 
-    <!-- 🇷🇺 Russian -->
+    <!-- 🇷🇺 Русский -->
     <div class="flag" onclick="selectLang('ru')">
       <img src="https://flagcdn.com/w80/ru.png" alt="Русский">
       <div class="label">Русский</div>
@@ -54,6 +54,12 @@
     <div class="flag" onclick="selectLang('en')">
       <img src="https://flagcdn.com/w80/gb.png" alt="English">
       <div class="label">English</div>
+    </div>
+
+    <!-- 🇫🇷 Français -->
+    <div class="flag" onclick="selectLang('fr')">
+      <img src="https://flagcdn.com/w80/fr.png" alt="Français">
+      <div class="label">Français</div>
     </div>
 
     <!-- 🇩🇪 Deutsch -->
@@ -68,16 +74,46 @@
       <div class="label">Polski</div>
     </div>
 
-    <!-- 🇫🇷 Français -->
-    <div class="flag" onclick="selectLang('fr')">
-      <img src="https://flagcdn.com/w80/fr.png" alt="Français">
-      <div class="label">Français</div>
-    </div>
-
     <!-- 🇨🇿 Čeština -->
     <div class="flag" onclick="selectLang('cs')">
       <img src="https://flagcdn.com/w80/cz.png" alt="Čeština">
       <div class="label">Čeština</div>
+    </div>
+
+    <!-- 🇷🇴 Română -->
+    <div class="flag" onclick="selectLang('ro')">
+      <img src="https://flagcdn.com/w80/ro.png" alt="Română">
+      <div class="label">Română</div>
+    </div>
+
+    <!-- 🇧🇬 Bulgarian -->
+    <div class="flag" onclick="selectLang('bg')">
+      <img src="https://flagcdn.com/w80/bg.png" alt="Bulgarian">
+      <div class="label">Bulgarian</div>
+    </div>
+
+    <!-- 🇱🇹 Lithuanian -->
+    <div class="flag" onclick="selectLang('lt')">
+      <img src="https://flagcdn.com/w80/lt.png" alt="Lithuanian">
+      <div class="label">Lithuanian</div>
+    </div>
+
+    <!-- 🇭🇷 Croatian -->
+    <div class="flag" onclick="selectLang('hr')">
+      <img src="https://flagcdn.com/w80/hr.png" alt="Croatian">
+      <div class="label">Croatian</div>
+    </div>
+
+    <!-- 🇭🇺 Magyar -->
+    <div class="flag" onclick="selectLang('hu')">
+      <img src="https://flagcdn.com/w80/hu.png" alt="Magyar">
+      <div class="label">Magyar</div>
+    </div>
+
+    <!-- 🇩🇰 Dansk -->
+    <div class="flag" onclick="selectLang('da')">
+      <img src="https://flagcdn.com/w80/dk.png" alt="Dansk">
+      <div class="label">Dansk</div>
     </div>
 
     <!-- 🇪🇸 Español -->
@@ -98,14 +134,48 @@
       <div class="label">Українська</div>
     </div>
 
-    <!-- добавь остальные по аналогии... -->
+    <!-- 🇳🇴 Norwegian -->
+    <div class="flag" onclick="selectLang('no')">
+      <img src="https://flagcdn.com/w80/no.png" alt="Norwegian">
+      <div class="label">Norwegian</div>
+    </div>
+
+    <!-- 🇵🇹 Português -->
+    <div class="flag" onclick="selectLang('pt')">
+      <img src="https://flagcdn.com/w80/pt.png" alt="Português">
+      <div class="label">Português</div>
+    </div>
+
+    <!-- 🇹🇷 Türkçe -->
+    <div class="flag" onclick="selectLang('tr')">
+      <img src="https://flagcdn.com/w80/tr.png" alt="Türkçe">
+      <div class="label">Türkçe</div>
+    </div>
+
+    <!-- 🇸🇮 Slovenian -->
+    <div class="flag" onclick="selectLang('sl')">
+      <img src="https://flagcdn.com/w80/si.png" alt="Slovenian">
+      <div class="label">Slovenian</div>
+    </div>
+
+    <!-- 🇬🇷 Greek -->
+    <div class="flag" onclick="selectLang('el')">
+      <img src="https://flagcdn.com/w80/gr.png" alt="Greek">
+      <div class="label">Greek</div>
+    </div>
+
+    <!-- 🇷🇸 Српски -->
+    <div class="flag" onclick="selectLang('sr')">
+      <img src="https://flagcdn.com/w80/rs.png" alt="Српски">
+      <div class="label">Српски</div>
+    </div>
 
   </div>
 
   <script>
     function selectLang(code) {
-      localStorage.setItem('lang', code); // сохраняем в браузере
-      window.location.href = '../index.html?lang=' + code; // переход на главную с языком
+      localStorage.setItem('lang', code);
+      window.location.href = '../index.html?lang=' + code;
     }
   </script>
 </body>
