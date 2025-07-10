@@ -1,0 +1,21 @@
+import os
+
+# Убедимся, что папка существует
+os.makedirs("WebKurierCore/multipass", exist_ok=True)
+
+# Содержимое YAML-файла
+yaml_content = """name: webkuriercore
+cpus: 2
+memory: 4G
+disk: 20G
+image: 22.04
+"""
+
+# Путь к файлу
+yaml_path = "WebKurierCore/multipass/multipass.yaml"
+
+# Запись в файл
+with open(yaml_path, "w", encoding="utf-8") as f:
+    f.write(yaml_content)
+
+print(f"Файл создан: {yaml_path} ✅")
