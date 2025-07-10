@@ -64,6 +64,49 @@
     #dropbox-controls button:hover {
       background: #2563eb;
     }
+    /* --- Стили для интерфейса агента-верстальщика --- */
+    #preview-controls {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      z-index: 9999;
+      background: #fff;
+      padding: 12px;
+      border: 1px solid #ccc;
+      font-family: sans-serif;
+      max-width: 450px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    #preview-controls select,
+    #preview-controls textarea,
+    #preview-controls input[type="file"] {
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+    #preview-controls button {
+      margin-right: 4px;
+      margin-bottom: 4px;
+      padding: 6px 12px;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      background: #2563eb;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #preview-controls button:hover {
+      background: #1e40af;
+    }
+    #preview-controls textarea {
+      resize: vertical;
+      min-height: 38px;
+      max-height: 80px;
+      width: 100%;
+      box-sizing: border-box;
+      font-family: inherit;
+      margin-bottom: 4px;
+    }
   </style>
   <!-- 🔧 АГЕНТ ВЕРСТАЛЬЩИК -->
   <script type="module">
@@ -87,28 +130,16 @@
     // === terminal.js ===
     // Виртуальный терминал с поддержкой команд и интеграцией с Dropbox-агентом
 
-    // --- Импорт агента Dropbox ---
     import { dropboxAgent } from './engine/dropbox-agent.js';
 
-    // --- Глобальные переменные ---
     let balance = 0;
-    const autoLoadHistory = true; // Включите/выключите автозагрузку истории
+    const autoLoadHistory = true;
 
-    // --- Вспомогательные функции работы с балансом (можно заменить на свои) ---
-    function getBalance() {
-      return balance;
-    }
-    function setBalance(val) {
-      balance = val;
-    }
-    function addCoins(n) {
-      setBalance(getBalance() + n);
-    }
-    function resetCoins() {
-      setBalance(0);
-    }
+    function getBalance() { return balance; }
+    function setBalance(val) { balance = val; }
+    function addCoins(n) { setBalance(getBalance() + n); }
+    function resetCoins() { setBalance(0); }
 
-    // --- Вспомогательные функции для вывода ---
     function printToTerminal(message, isHtml = false) {
       const output = document.getElementById('terminal-output');
       if (isHtml) {
@@ -124,7 +155,6 @@
       return div.innerHTML;
     }
 
-    // --- Загрузка истории Copilot ---
     async function loadCopilotHistory() {
       try {
         const result = await dropboxAgent.load('dropbox-history.json');
@@ -143,7 +173,6 @@
       }
     }
 
-    // --- Обработка команд ---
     async function handleCommand(event) {
       if (event.key !== 'Enter') return;
       const input = event.target;
@@ -157,9 +186,7 @@
 
       printToTerminal('> ' + command);
 
-      // --- Основной switch по командам ---
       switch (true) {
-        // Добавить сумму к балансу: /add 10
         case command.startsWith('/add '): {
           const parts = command.split(' ');
           const amount = parseFloat(parts[1]);
@@ -171,8 +198,6 @@
           }
           break;
         }
-
-        // Сохранить баланс в файл: /save имя.txt
         case command.startsWith('/save'): {
           const parts = command.split(' ');
           const filename = parts[1] || 'webcoin.txt';
@@ -185,8 +210,6 @@
           }
           break;
         }
-
-        // Загрузить файл: /load имя.txt
         case command.startsWith('/load'): {
           const parts = command.split(' ');
           const filename = parts[1] || 'webcoin.txt';
@@ -205,8 +228,6 @@
           }
           break;
         }
-
-        // Список файлов в Dropbox: /list
         case command === '/list': {
           try {
             const files = await dropboxAgent.list();
@@ -221,33 +242,23 @@
           }
           break;
         }
-
-        // История Copilot: /history
         case command === '/history': {
           await loadCopilotHistory();
           break;
         }
-
-        // Баланс: /balance
         case command === '/balance': {
           printToTerminal(`💰 Текущий баланс: ${getBalance()}`);
           break;
         }
-
-        // Сброс баланса: /reset
         case command === '/reset': {
           resetCoins();
           printToTerminal('🔄 Баланс сброшен.');
           break;
         }
-
-        // Проверка связи: /ping
         case command === '/ping': {
           printToTerminal('🏓 Pong!');
           break;
         }
-
-        // Справка: help
         case command === 'help': {
           printToTerminal(
 `📝 Доступные команды:
@@ -263,8 +274,6 @@ help           — показать эту справку`
           );
           break;
         }
-
-        // Неизвестная команда
         default: {
           printToTerminal('❓ Неизвестная команда. Введите help для списка.');
           break;
@@ -273,16 +282,13 @@ help           — показать эту справку`
       input.focus();
     }
 
-    // --- Привязка обработчика к input ---
     const terminalInput = document.getElementById('terminal-input');
     terminalInput.addEventListener('keydown', handleCommand);
 
-    // --- Кнопки управления Dropbox (если есть блок в HTML) ---
     function addDropboxButtons() {
       const controls = document.getElementById('dropbox-controls');
       if (!controls) return;
 
-      // Кнопка "Сохранить"
       if (!document.getElementById('save-btn')) {
         const saveBtn = document.createElement('button');
         saveBtn.id = 'save-btn';
@@ -303,7 +309,6 @@ help           — показать эту справку`
         controls.appendChild(saveBtn);
       }
 
-      // Кнопка "Загрузить"
       if (!document.getElementById('load-btn')) {
         const loadBtn = document.createElement('button');
         loadBtn.id = 'load-btn';
@@ -330,7 +335,6 @@ help           — показать эту справку`
         controls.appendChild(loadBtn);
       }
 
-      // Кнопка "Файлы"
       if (!document.getElementById('list-btn')) {
         const listBtn = document.createElement('button');
         listBtn.id = 'list-btn';
@@ -352,7 +356,6 @@ help           — показать эту справку`
         controls.appendChild(listBtn);
       }
 
-      // Кнопка "История Copilot"
       if (!document.getElementById('copilot-history-btn')) {
         const btn = document.createElement('button');
         btn.id = 'copilot-history-btn';
@@ -363,25 +366,124 @@ help           — показать эту справку`
     }
     addDropboxButtons();
 
-    // --- Автозагрузка истории при старте ---
     if (autoLoadHistory) {
       loadCopilotHistory();
     }
 
-    // --- Инициализация ---
     printToTerminal('🖥️ Виртуальный терминал готов. Введите help для списка команд.');
     terminalInput.focus();
   </script>
-<!-- 📦 Кнопки и меню предпросмотра -->
-<div id="preview-controls" style="position: fixed; bottom: 10px; left: 10px; z-index: 9999; background: #fff; padding: 10px; border: 1px solid #ccc;">
-  <select id="template-select">
-    <option value="">📂 Выбрать шаблон</option>
-    <option value="header">🔝 Шапка сайта</option>
-    <option value="card">📦 Карточка товара</option>
-    <option value="grid">📐 Сетка блоков</option>
-  </select>
-  <button onclick="handleTemplateBuild()">🚀 Сгенерировать</button>
-  <button onclick="if (window.lastGeneratedHTML?.length) LayoutUI.show(window.lastGeneratedHTML); else alert('HTML пуст!')">🔍 Предпросмотр</button>
-  <button onclick="LayoutUI.hide()">❌ Скрыть</button>
-  <button onclick="downloadHTML()">💾 Сохранить</button>
-</div>
+
+  <!-- 📦 Расширенный интерфейс агента-верстальщика -->
+  <div id="preview-controls">
+    <div style="margin-bottom: 6px;">
+      <select id="template-select" style="width: 100%;">
+        <option value="">📂 Загрузка шаблонов...</option>
+      </select>
+      <button onclick="handleTemplateBuild()">🚀 Сгенерировать</button>
+    </div>
+    <div style="margin-bottom: 6px;">
+      <input type="file" id="upload-html" accept=".html" />
+      <button onclick="loadCustomHTML()">📤 Загрузить HTML</button>
+    </div>
+    <div style="margin-bottom: 6px;">
+      <textarea id="ai-description" placeholder="🧠 Опиши, что сгенерировать (например, лендинг с кнопкой)" rows="2" style="width: 100%;"></textarea>
+      <button onclick="generateFromAI()">🤖 Сгенерировать по описанию</button>
+    </div>
+    <div style="margin-bottom: 6px;">
+      <button onclick="if (window.lastGeneratedHTML?.length) LayoutUI.show(window.lastGeneratedHTML); else alert('HTML пуст!')">🔍 Предпросмотр</button>
+      <button onclick="LayoutUI.hide()">❌ Скрыть</button>
+      <button onclick="downloadHTML()">💾 Сохранить</button>
+      <button onclick="exportToZip()">📦 Экспорт ZIP</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { LayoutUI } from './engine/agents/layout-agent/layout-ui.js';
+    LayoutUI.init();
+
+    window.lastGeneratedHTML = "";
+    let templates = {};
+
+    async function loadTemplates() {
+      try {
+        const res = await fetch('./engine/agents/layout-agent/templates/templates.json');
+        templates = await res.json();
+        const select = document.getElementById("template-select");
+        select.innerHTML = '<option value="">📂 Выбрать шаблон</option>';
+        for (const key in templates) {
+          const name = templates[key].name || key;
+          const opt = document.createElement("option");
+          opt.value = key;
+          opt.textContent = name;
+          select.appendChild(opt);
+        }
+      } catch (err) {
+        alert("❌ Ошибка загрузки шаблонов");
+        console.error(err);
+      }
+    }
+
+    window.handleTemplateBuild = () => {
+      const selected = document.getElementById("template-select").value;
+      if (!selected || !templates[selected]) return alert("Выбери шаблон!");
+      const html = templates[selected].html || "";
+      if (!html.trim()) return alert("❗ Шаблон пуст!");
+      window.lastGeneratedHTML = html;
+      LayoutUI.show(html);
+    };
+
+    window.loadCustomHTML = () => {
+      const file = document.getElementById("upload-html").files[0];
+      if (!file) return alert("📤 Выбери .html файл!");
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const html = e.target.result;
+        window.lastGeneratedHTML = html;
+        LayoutUI.show(html);
+      };
+      reader.readAsText(file);
+    };
+
+    window.generateFromAI = () => {
+      const prompt = document.getElementById("ai-description").value.trim();
+      if (!prompt) return alert("🧠 Введи описание!");
+      // 🔽 Пример генерации. В реальности подключим GPT/интеграцию
+      const html = `
+<section style="padding:20px; text-align:center;">
+  <h2>${prompt}</h2>
+  <p>Это пример секции, сгенерированной по описанию.</p>
+  <button style="padding:10px 20px;">Действие</button>
+</section>
+`.trim();
+      window.lastGeneratedHTML = html;
+      LayoutUI.show(html);
+    };
+
+    window.downloadHTML = () => {
+      if (!window.lastGeneratedHTML?.trim()) return alert("Сначала сгенерируй HTML!");
+      const blob = new Blob([window.lastGeneratedHTML], { type: "text/html" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "webkurier_layout.html";
+      link.click();
+    };
+
+    window.exportToZip = async () => {
+      if (!window.lastGeneratedHTML?.trim()) return alert("Нет содержимого!");
+      const zip = new JSZip();
+      zip.file("index.html", window.lastGeneratedHTML);
+      zip.folder("assets"); // пустая папка
+      const content = await zip.generateAsync({ type: "blob" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(content);
+      link.download = "webkurier_project.zip";
+      link.click();
+    };
+
+    await loadTemplates();
+  </script>
+  <!-- 📦 Подключаем JSZip для ZIP-файлов -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+</body>
+</html>
