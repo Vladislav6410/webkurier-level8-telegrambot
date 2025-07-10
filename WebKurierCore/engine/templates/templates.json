@@ -10,5 +10,41 @@
   "grid": {
     "name": "📐 Сетка блоков",
     "html": "<div style=\"display:grid;grid-template-columns:1fr 1fr;gap:10px;\"><div style=\"background:#eee;padding:10px;\">Блок 1</div><div style=\"background:#ddd;padding:10px;\">Блок 2</div></div>"
+  },
+  "footer": {
+    "name": "🔻 Подвал сайта",
+    "html": "<footer style=\"background:#222;color:#fff;text-align:center;padding:15px;\">© 2025 WebKurier</footer>"
+  },
+  "form": {
+    "name": "✍️ Форма обратной связи",
+    "html": "<form style=\"display:flex;flex-direction:column;width:300px;\"><input type='text' placeholder='Ваше имя' style='margin-bottom:10px;padding:8px;'><input type='email' placeholder='Email' style='margin-bottom:10px;padding:8px;'><textarea placeholder='Сообщение' style='padding:8px;'></textarea><button type='submit' style='margin-top:10px;padding:8px;'>Отправить</button></form>"
+  },
+  "hero": {
+    "name": "🎯 Главный баннер (Hero)",
+    "html": "<section style=\"background:#f0f0f0;padding:40px;text-align:center;\"><h1>Добро пожаловать!</h1><p>Это главный блок сайта.</p><button style='padding:10px 20px;'>Начать</button></section>"
+  },
+  "navbar": {
+    "name": "🧭 Навигация (меню)",
+    "html": "<nav style=\"background:#333;padding:10px;\"><a href=\"#\" style=\"color:#fff;margin-right:15px;\">Главная</a><a href=\"#\" style=\"color:#fff;\">Контакты</a></nav>"
+  },
+  "gallery": {
+    "name": "🖼️ Галерея изображений",
+    "html": "<div style=\"display:flex;gap:10px;\"><img src=\"https://via.placeholder.com/100\"/><img src=\"https://via.placeholder.com/100\"/><img src=\"https://via.placeholder.com/100\"/></div>"
+  },
+  "sidebar": {
+    "name": "📚 Боковая панель (Sidebar)",
+    "html": "<aside style=\"width:200px;background:#f5f5f5;padding:10px;\"><ul><li><a href='#'>Раздел 1</a></li><li><a href='#'>Раздел 2</a></li></ul></aside>"
+  },
+  "pricing": {
+    "name": "💰 Блок тарифов",
+    "html": "<div style=\"display:flex;gap:20px;\"><div style=\"border:1px solid #ccc;padding:20px;\"><h3>Базовый</h3><p>€9/мес</p></div><div style=\"border:1px solid #ccc;padding:20px;\"><h3>Премиум</h3><p>€29/мес</p></div></div>"
+  },
+  "cta": {
+    "name": "🚀 Призыв к действию (CTA)",
+    "html": "<section style=\"background:#2563eb;color:#fff;text-align:center;padding:30px;\"><h2>Готовы начать?</h2><button style='margin-top:10px;padding:10px 20px;'>Регистрация</button></section>"
+  },
+  "faq": {
+    "name": "❓ Блок FAQ",
+    "html": "<section><h3>Частые вопросы</h3><details><summary>Как это работает?</summary><p>Очень просто. Вы нажимаете кнопку, и всё запускается.</p></details><details><summary>Сколько стоит?</summary><p>Базовый доступ бесплатный.</p></details></section>"
   }
 }
