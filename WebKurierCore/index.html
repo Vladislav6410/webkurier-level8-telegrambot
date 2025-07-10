@@ -372,5 +372,16 @@ help           — показать эту справку`
     printToTerminal('🖥️ Виртуальный терминал готов. Введите help для списка команд.');
     terminalInput.focus();
   </script>
-</body>
-</html>
+<!-- 📦 Кнопки и меню предпросмотра -->
+<div id="preview-controls" style="position: fixed; bottom: 10px; left: 10px; z-index: 9999; background: #fff; padding: 10px; border: 1px solid #ccc;">
+  <select id="template-select">
+    <option value="">📂 Выбрать шаблон</option>
+    <option value="header">🔝 Шапка сайта</option>
+    <option value="card">📦 Карточка товара</option>
+    <option value="grid">📐 Сетка блоков</option>
+  </select>
+  <button onclick="handleTemplateBuild()">🚀 Сгенерировать</button>
+  <button onclick="if (window.lastGeneratedHTML?.length) LayoutUI.show(window.lastGeneratedHTML); else alert('HTML пуст!')">🔍 Предпросмотр</button>
+  <button onclick="LayoutUI.hide()">❌ Скрыть</button>
+  <button onclick="downloadHTML()">💾 Сохранить</button>
+</div>
