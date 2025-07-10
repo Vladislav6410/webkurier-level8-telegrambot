@@ -1,169 +1,255 @@
-// === terminal.js ===
-// Виртуальный терминал с поддержкой команд и интеграцией с Dropbox-агентом
-
-// --- Импорт агента Dropbox ---
-import { dropboxAgent } from './engine/dropbox-agent.js';
-
-// --- Глобальные переменные ---
-let balance = 0;
-const autoLoadHistory = true; // Включите/выключите автозагрузку истории
-
-// --- Вспомогательные функции работы с балансом (можно заменить на свои) ---
-function getBalance() {
-  return balance;
-}
-function setBalance(val) {
-  balance = val;
-}
-function addCoins(n) {
-  setBalance(getBalance() + n);
-}
-function resetCoins() {
-  setBalance(0);
-}
-
-// --- Вспомогательные функции для вывода ---
-function printToTerminal(message, isHtml = false) {
-  const output = document.getElementById('terminal-output');
-  if (isHtml) {
-    output.value += message + '\n';
-  } else {
-    output.value += escapeHtml(message) + '\n';
-  }
-  output.scrollTop = output.scrollHeight;
-}
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.innerText = text;
-  return div.innerHTML;
-}
-
-// --- Загрузка истории Copilot ---
-async function loadCopilotHistory() {
-  try {
-    const result = await dropboxAgent.load('dropbox-history.json');
-    if (!result) {
-      printToTerminal('❌ История не найдена.');
-      return;
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Виртуальный терминал и агент-верстальщик</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
     }
-    if (typeof result === 'object' && result.text) {
-      const text = await result.text();
-      printToTerminal(`📜 История Copilot:\n${text}`);
-    } else {
-      printToTerminal(`📜 История Copilot:\n${result}`);
+    #terminal-container {
+      max-width: 600px;
+      margin: 40px auto 20px auto;
+      background: #222;
+      color: #eee;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      padding: 24px 24px 16px 24px;
     }
-  } catch (err) {
-    printToTerminal(`❌ Ошибка загрузки истории: ${err.message || err}`);
-  }
-}
+    #terminal-output {
+      width: 100%;
+      height: 280px;
+      background: #111;
+      color: #cfcfcf;
+      border: none;
+      border-radius: 6px;
+      padding: 12px;
+      font-family: 'Fira Mono', 'Consolas', monospace;
+      font-size: 15px;
+      resize: none;
+      margin-bottom: 12px;
+      box-sizing: border-box;
+    }
+    #terminal-input {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 4px;
+      border: none;
+      background: #333;
+      color: #fff;
+      font-size: 15px;
+      font-family: inherit;
+      box-sizing: border-box;
+      outline: none;
+      margin-bottom: 8px;
+    }
+    #dropbox-controls {
+      margin-bottom: 8px;
+    }
+    #dropbox-controls button {
+      margin-right: 8px;
+      margin-bottom: 4px;
+      padding: 6px 14px;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      background: #3b82f6;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #dropbox-controls button:hover {
+      background: #2563eb;
+    }
+  </style>
+  <!-- 🔧 АГЕНТ ВЕРСТАЛЬЩИК -->
+  <script type="module">
+    import { LayoutAgent } from './engine/agents/layout-agent/layout-agent.js';
+    import { LayoutUI } from './engine/agents/layout-agent/layout-ui.js';
 
-// --- Обработка команд ---
-async function handleCommand(event) {
-  if (event.key !== 'Enter') return;
-  const input = event.target;
-  const command = input.value.trim();
-  input.value = '';
+    LayoutUI.init(); // создаём контейнер предпросмотра
 
-  if (!command) {
-    input.focus();
-    return;
-  }
+    window.handleLayoutCommand = (cmd, args, output) => {
+      LayoutAgent.handleCommand(cmd, args, output);
+    };
+  </script>
+</head>
+<body>
+  <div id="terminal-container">
+    <div id="dropbox-controls"></div>
+    <textarea id="terminal-output" readonly></textarea>
+    <input id="terminal-input" autocomplete="off" placeholder="Введите команду и нажмите Enter...">
+  </div>
+  <script type="module">
+    // === terminal.js ===
+    // Виртуальный терминал с поддержкой команд и интеграцией с Dropbox-агентом
 
-  printToTerminal('> ' + command);
+    // --- Импорт агента Dropbox ---
+    import { dropboxAgent } from './engine/dropbox-agent.js';
 
-  // --- Основной switch по командам ---
-  switch (true) {
-    // Добавить сумму к балансу: /add 10
-    case command.startsWith('/add '): {
-      const parts = command.split(' ');
-      const amount = parseFloat(parts[1]);
-      if (isNaN(amount)) {
-        printToTerminal('❌ Неверный формат суммы.');
+    // --- Глобальные переменные ---
+    let balance = 0;
+    const autoLoadHistory = true; // Включите/выключите автозагрузку истории
+
+    // --- Вспомогательные функции работы с балансом (можно заменить на свои) ---
+    function getBalance() {
+      return balance;
+    }
+    function setBalance(val) {
+      balance = val;
+    }
+    function addCoins(n) {
+      setBalance(getBalance() + n);
+    }
+    function resetCoins() {
+      setBalance(0);
+    }
+
+    // --- Вспомогательные функции для вывода ---
+    function printToTerminal(message, isHtml = false) {
+      const output = document.getElementById('terminal-output');
+      if (isHtml) {
+        output.value += message + '\n';
       } else {
-        addCoins(amount);
-        printToTerminal(`💰 Баланс увеличен на ${amount}. Текущий баланс: ${getBalance()}.`);
+        output.value += escapeHtml(message) + '\n';
       }
-      break;
+      output.scrollTop = output.scrollHeight;
+    }
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.innerText = text;
+      return div.innerHTML;
     }
 
-    // Сохранить баланс в файл: /save имя.txt
-    case command.startsWith('/save'): {
-      const parts = command.split(' ');
-      const filename = parts[1] || 'webcoin.txt';
-      const data = `Баланс: ${getBalance()}`;
+    // --- Загрузка истории Copilot ---
+    async function loadCopilotHistory() {
       try {
-        await dropboxAgent.save(filename, data);
-        printToTerminal(`✅ Баланс сохранён в файл "${filename}".`);
-      } catch (err) {
-        printToTerminal(`❌ Ошибка сохранения: ${err.message || err}`);
-      }
-      break;
-    }
-
-    // Загрузить файл: /load имя.txt
-    case command.startsWith('/load'): {
-      const parts = command.split(' ');
-      const filename = parts[1] || 'webcoin.txt';
-      try {
-        const result = await dropboxAgent.load(filename);
+        const result = await dropboxAgent.load('dropbox-history.json');
         if (!result) {
-          printToTerminal(`❌ Файл "${filename}" не найден.`);
-        } else if (typeof result === 'object' && result.text) {
+          printToTerminal('❌ История не найдена.');
+          return;
+        }
+        if (typeof result === 'object' && result.text) {
           const text = await result.text();
-          printToTerminal(`📥 Содержимое файла "${filename}":\n${text}`);
+          printToTerminal(`📜 История Copilot:\n${text}`);
         } else {
-          printToTerminal(`📥 Содержимое файла "${filename}":\n${result}`);
+          printToTerminal(`📜 История Copilot:\n${result}`);
         }
       } catch (err) {
-        printToTerminal(`❌ Ошибка загрузки: ${err.message || err}`);
+        printToTerminal(`❌ Ошибка загрузки истории: ${err.message || err}`);
       }
-      break;
     }
 
-    // Список файлов в Dropbox: /list
-    case command === '/list': {
-      try {
-        const files = await dropboxAgent.list();
-        if (!files || !files.length) {
-          printToTerminal('📂 Папка Dropbox пуста.');
-        } else {
-          const fileList = files.map(f => '• ' + (typeof f === 'string' ? f : f.name)).join('\n');
-          printToTerminal(`📁 Файлы в Dropbox:\n${fileList}`);
+    // --- Обработка команд ---
+    async function handleCommand(event) {
+      if (event.key !== 'Enter') return;
+      const input = event.target;
+      const command = input.value.trim();
+      input.value = '';
+
+      if (!command) {
+        input.focus();
+        return;
+      }
+
+      printToTerminal('> ' + command);
+
+      // --- Основной switch по командам ---
+      switch (true) {
+        // Добавить сумму к балансу: /add 10
+        case command.startsWith('/add '): {
+          const parts = command.split(' ');
+          const amount = parseFloat(parts[1]);
+          if (isNaN(amount)) {
+            printToTerminal('❌ Неверный формат суммы.');
+          } else {
+            addCoins(amount);
+            printToTerminal(`💰 Баланс увеличен на ${amount}. Текущий баланс: ${getBalance()}.`);
+          }
+          break;
         }
-      } catch (err) {
-        printToTerminal(`❌ Ошибка списка: ${err.message || err}`);
-      }
-      break;
-    }
 
-    // История Copilot: /history
-    case command === '/history': {
-      await loadCopilotHistory();
-      break;
-    }
+        // Сохранить баланс в файл: /save имя.txt
+        case command.startsWith('/save'): {
+          const parts = command.split(' ');
+          const filename = parts[1] || 'webcoin.txt';
+          const data = `Баланс: ${getBalance()}`;
+          try {
+            await dropboxAgent.save(filename, data);
+            printToTerminal(`✅ Баланс сохранён в файл "${filename}".`);
+          } catch (err) {
+            printToTerminal(`❌ Ошибка сохранения: ${err.message || err}`);
+          }
+          break;
+        }
 
-    // Баланс: /balance
-    case command === '/balance': {
-      printToTerminal(`💰 Текущий баланс: ${getBalance()}`);
-      break;
-    }
+        // Загрузить файл: /load имя.txt
+        case command.startsWith('/load'): {
+          const parts = command.split(' ');
+          const filename = parts[1] || 'webcoin.txt';
+          try {
+            const result = await dropboxAgent.load(filename);
+            if (!result) {
+              printToTerminal(`❌ Файл "${filename}" не найден.`);
+            } else if (typeof result === 'object' && result.text) {
+              const text = await result.text();
+              printToTerminal(`📥 Содержимое файла "${filename}":\n${text}`);
+            } else {
+              printToTerminal(`📥 Содержимое файла "${filename}":\n${result}`);
+            }
+          } catch (err) {
+            printToTerminal(`❌ Ошибка загрузки: ${err.message || err}`);
+          }
+          break;
+        }
 
-    // Сброс баланса: /reset
-    case command === '/reset': {
-      resetCoins();
-      printToTerminal('🔄 Баланс сброшен.');
-      break;
-    }
+        // Список файлов в Dropbox: /list
+        case command === '/list': {
+          try {
+            const files = await dropboxAgent.list();
+            if (!files || !files.length) {
+              printToTerminal('📂 Папка Dropbox пуста.');
+            } else {
+              const fileList = files.map(f => '• ' + (typeof f === 'string' ? f : f.name)).join('\n');
+              printToTerminal(`📁 Файлы в Dropbox:\n${fileList}`);
+            }
+          } catch (err) {
+            printToTerminal(`❌ Ошибка списка: ${err.message || err}`);
+          }
+          break;
+        }
 
-    // Проверка связи: /ping
-    case command === '/ping': {
-      printToTerminal('🏓 Pong!');
-      break;
-    }
+        // История Copilot: /history
+        case command === '/history': {
+          await loadCopilotHistory();
+          break;
+        }
 
-    // Справка: help
-    case command === 'help': {
-      printToTerminal(
+        // Баланс: /balance
+        case command === '/balance': {
+          printToTerminal(`💰 Текущий баланс: ${getBalance()}`);
+          break;
+        }
+
+        // Сброс баланса: /reset
+        case command === '/reset': {
+          resetCoins();
+          printToTerminal('🔄 Баланс сброшен.');
+          break;
+        }
+
+        // Проверка связи: /ping
+        case command === '/ping': {
+          printToTerminal('🏓 Pong!');
+          break;
+        }
+
+        // Справка: help
+        case command === 'help': {
+          printToTerminal(
 `📝 Доступные команды:
 /add N         — добавить сумму к балансу
 /save [имя]    — сохранить баланс в файл (по умолчанию webcoin.txt)
@@ -174,114 +260,117 @@ async function handleCommand(event) {
 /reset         — сбросить баланс
 /ping          — проверка связи
 help           — показать эту справку`
-      );
-      break;
-    }
+          );
+          break;
+        }
 
-    // Неизвестная команда
-    default: {
-      printToTerminal('❓ Неизвестная команда. Введите help для списка.');
-      break;
-    }
-  }
-  input.focus();
-}
-
-// --- Привязка обработчика к input ---
-const terminalInput = document.getElementById('terminal-input');
-terminalInput.addEventListener('keydown', handleCommand);
-
-// --- Кнопки управления Dropbox (если есть блок в HTML) ---
-function addDropboxButtons() {
-  const controls = document.getElementById('dropbox-controls');
-  if (!controls) return;
-
-  // Кнопка "Сохранить"
-  if (!document.getElementById('save-btn')) {
-    const saveBtn = document.createElement('button');
-    saveBtn.id = 'save-btn';
-    saveBtn.textContent = '📤 Сохранить';
-    saveBtn.onclick = async function() {
-      const name = prompt('Имя файла для сохранения:', 'webcoin.txt');
-      if (name) {
-        const content = `Баланс: ${getBalance()}`;
-        try {
-          await dropboxAgent.save(name, content);
-          printToTerminal(`✅ Файл "${name}" сохранён в Dropbox.`);
-        } catch (err) {
-          printToTerminal(`❌ Ошибка сохранения: ${err.message || err}`);
+        // Неизвестная команда
+        default: {
+          printToTerminal('❓ Неизвестная команда. Введите help для списка.');
+          break;
         }
       }
-      terminalInput.focus();
-    };
-    controls.appendChild(saveBtn);
-  }
+      input.focus();
+    }
 
-  // Кнопка "Загрузить"
-  if (!document.getElementById('load-btn')) {
-    const loadBtn = document.createElement('button');
-    loadBtn.id = 'load-btn';
-    loadBtn.textContent = '📥 Загрузить';
-    loadBtn.onclick = async function() {
-      const name = prompt('Имя файла для загрузки:', 'webcoin.txt');
-      if (name) {
-        try {
-          const result = await dropboxAgent.load(name);
-          if (result && result.text) {
-            const text = await result.text();
-            printToTerminal(`📥 Файл "${name}" загружен:\n${text}`);
-          } else if (result) {
-            printToTerminal(`📥 Файл "${name}" загружен:\n${result}`);
-          } else {
-            printToTerminal(`❌ Файл "${name}" не найден.`);
+    // --- Привязка обработчика к input ---
+    const terminalInput = document.getElementById('terminal-input');
+    terminalInput.addEventListener('keydown', handleCommand);
+
+    // --- Кнопки управления Dropbox (если есть блок в HTML) ---
+    function addDropboxButtons() {
+      const controls = document.getElementById('dropbox-controls');
+      if (!controls) return;
+
+      // Кнопка "Сохранить"
+      if (!document.getElementById('save-btn')) {
+        const saveBtn = document.createElement('button');
+        saveBtn.id = 'save-btn';
+        saveBtn.textContent = '📤 Сохранить';
+        saveBtn.onclick = async function() {
+          const name = prompt('Имя файла для сохранения:', 'webcoin.txt');
+          if (name) {
+            const content = `Баланс: ${getBalance()}`;
+            try {
+              await dropboxAgent.save(name, content);
+              printToTerminal(`✅ Файл "${name}" сохранён в Dropbox.`);
+            } catch (err) {
+              printToTerminal(`❌ Ошибка сохранения: ${err.message || err}`);
+            }
           }
-        } catch (err) {
-          printToTerminal(`❌ Ошибка загрузки: ${err.message || err}`);
-        }
+          terminalInput.focus();
+        };
+        controls.appendChild(saveBtn);
       }
-      terminalInput.focus();
-    };
-    controls.appendChild(loadBtn);
-  }
 
-  // Кнопка "Файлы"
-  if (!document.getElementById('list-btn')) {
-    const listBtn = document.createElement('button');
-    listBtn.id = 'list-btn';
-    listBtn.textContent = '📁 Файлы';
-    listBtn.onclick = async function() {
-      try {
-        const files = await dropboxAgent.list();
-        if (!files || !files.length) {
-          printToTerminal('📂 Папка Dropbox пуста.');
-        } else {
-          const fileList = files.map(f => '• ' + (typeof f === 'string' ? f : f.name)).join('\n');
-          printToTerminal(`📁 Файлы в Dropbox:\n${fileList}`);
-        }
-      } catch (err) {
-        printToTerminal(`❌ Ошибка списка: ${err.message || err}`);
+      // Кнопка "Загрузить"
+      if (!document.getElementById('load-btn')) {
+        const loadBtn = document.createElement('button');
+        loadBtn.id = 'load-btn';
+        loadBtn.textContent = '📥 Загрузить';
+        loadBtn.onclick = async function() {
+          const name = prompt('Имя файла для загрузки:', 'webcoin.txt');
+          if (name) {
+            try {
+              const result = await dropboxAgent.load(name);
+              if (result && result.text) {
+                const text = await result.text();
+                printToTerminal(`📥 Файл "${name}" загружен:\n${text}`);
+              } else if (result) {
+                printToTerminal(`📥 Файл "${name}" загружен:\n${result}`);
+              } else {
+                printToTerminal(`❌ Файл "${name}" не найден.`);
+              }
+            } catch (err) {
+              printToTerminal(`❌ Ошибка загрузки: ${err.message || err}`);
+            }
+          }
+          terminalInput.focus();
+        };
+        controls.appendChild(loadBtn);
       }
-      terminalInput.focus();
-    };
-    controls.appendChild(listBtn);
-  }
 
-  // Кнопка "История Copilot"
-  if (!document.getElementById('copilot-history-btn')) {
-    const btn = document.createElement('button');
-    btn.id = 'copilot-history-btn';
-    btn.textContent = '📜 История Copilot';
-    btn.onclick = loadCopilotHistory;
-    controls.appendChild(btn);
-  }
-}
-addDropboxButtons();
+      // Кнопка "Файлы"
+      if (!document.getElementById('list-btn')) {
+        const listBtn = document.createElement('button');
+        listBtn.id = 'list-btn';
+        listBtn.textContent = '📁 Файлы';
+        listBtn.onclick = async function() {
+          try {
+            const files = await dropboxAgent.list();
+            if (!files || !files.length) {
+              printToTerminal('📂 Папка Dropbox пуста.');
+            } else {
+              const fileList = files.map(f => '• ' + (typeof f === 'string' ? f : f.name)).join('\n');
+              printToTerminal(`📁 Файлы в Dropbox:\n${fileList}`);
+            }
+          } catch (err) {
+            printToTerminal(`❌ Ошибка списка: ${err.message || err}`);
+          }
+          terminalInput.focus();
+        };
+        controls.appendChild(listBtn);
+      }
 
-// --- Автозагрузка истории при старте ---
-if (autoLoadHistory) {
-  loadCopilotHistory();
-}
+      // Кнопка "История Copilot"
+      if (!document.getElementById('copilot-history-btn')) {
+        const btn = document.createElement('button');
+        btn.id = 'copilot-history-btn';
+        btn.textContent = '📜 История Copilot';
+        btn.onclick = loadCopilotHistory;
+        controls.appendChild(btn);
+      }
+    }
+    addDropboxButtons();
 
-// --- Инициализация ---
-printToTerminal('🖥️ Виртуальный терминал готов. Введите help для списка команд.');
-terminalInput.focus();
+    // --- Автозагрузка истории при старте ---
+    if (autoLoadHistory) {
+      loadCopilotHistory();
+    }
+
+    // --- Инициализация ---
+    printToTerminal('🖥️ Виртуальный терминал готов. Введите help для списка команд.');
+    terminalInput.focus();
+  </script>
+</body>
+</html>
