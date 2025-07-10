@@ -1,0 +1,27 @@
+import os
+
+# Убедимся, что папка существует
+os.makedirs("WebKurierCore/multipass", exist_ok=True)
+
+# Содержимое cloud-init.yaml
+cloud_init = """#cloud-config
+package_update: true
+packages:
+  - git
+  - curl
+  - nodejs
+  - npm
+runcmd:
+  - git clone https://github.com/Vladislav6410/WebKurierCore.git /home/ubuntu/WebKurierCore
+  - cd /home/ubuntu/WebKurierCore
+  - npm install || true
+"""
+
+# Путь к файлу
+cloud_init_path = "WebKurierCore/multipass/cloud-init.yaml"
+
+# Сохраняем файл
+with open(cloud_init_path, "w", encoding="utf-8") as f:
+    f.write(cloud_init)
+
+print(f"Файл создан: {cloud_init_path} ✅")
