@@ -3,12 +3,50 @@ repos:
     rev: v8.18.1
     hooks:
       - id: gitleaks
-        args: ["detect", "--no-git", "--source=WebKurierCore"]
+        args: ["detect", "--no-git", "--source=."]
         stages: [commit]
 
   - repo: https://github.com/PyCQA/bandit
-    rev: 'stable'
+    rev: stable
     hooks:
       - id: bandit
-        args: ["-r", "WebKurierCore"]
+        args: ["-r", "./engine", "./multipass", "./handlers"]
         stages: [commit]
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-yaml
+        files: "\\.(yaml|yml)$"
+      - id: check-json
+        files: "\\.(json)$"
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+      - id: debug-statements
+        files: "\\.(js|py)$"
+
+  - repo: https://github.com/psf/black
+    rev: 24.3.0
+    hooks:
+      - id: black
+        language_version: python3
+        types: [python]
+        exclude: "webqr/|lang-select/"
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.1.0
+    hooks:
+      - id: flake8
+        additional_dependencies: [flake8-bugbear]
+        exclude: "webqr/|lang-select/"
+
+  - repo: https://github.com/prettier/prettier
+    rev: v3.2.5
+    hooks:
+      - id: prettier
+        additional_dependencies: ["prettier@3.2.5"]
+        files: "\\.(js|ts|jsx|tsx|json|html|css)$"
+        exclude: "engine/|handlers/|multipass/"
+
+default_stages: [commit, push]
