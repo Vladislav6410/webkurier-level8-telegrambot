@@ -1,0 +1,10 @@
+# 📁 menu/menu_text.py
+
+menus = {
+    'ru': ["📖 Инструкция", "📊 Бюджет", "📚 База знаний", "🔧 Инструменты", "👨‍💻 Цифровой инженер"],
+    'en': ["📖 Instruction", "📊 Budget", "📚 Knowledge Base", "🔧 Tools", "👨‍💻 Digital Engineer"],
+    'de': ["📖 Anleitung", "📊 Budget", "📚 Wissensdatenbank", "🔧 Werkzeuge", "👨‍💻 Digitaler Ingenieur"],
+    'pl': ["📖 Instrukcja", "📊 Budżet", "📚 Baza wiedzy", "🔧 Narzędzia", "👨‍💻 Inżynier cyfrowy"],
+    'fr': ["📖 Manuel", "📊 Budget", "📚 Base de connaissances", "🔧 Outils", "👨‍💻 Ingénieur numérique"]
+    # При необходимости добавим все языки позже
+}
