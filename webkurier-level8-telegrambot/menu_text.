@@ -5,6 +5,21 @@ menus = {
     'en': ["📖 Instruction", "📊 Budget", "📚 Knowledge Base", "🔧 Tools", "👨‍💻 Digital Engineer"],
     'de': ["📖 Anleitung", "📊 Budget", "📚 Wissensdatenbank", "🔧 Werkzeuge", "👨‍💻 Digitaler Ingenieur"],
     'pl': ["📖 Instrukcja", "📊 Budżet", "📚 Baza wiedzy", "🔧 Narzędzia", "👨‍💻 Inżynier cyfrowy"],
-    'fr': ["📖 Manuel", "📊 Budget", "📚 Base de connaissances", "🔧 Outils", "👨‍💻 Ingénieur numérique"]
-    # При необходимости добавим все языки позже
+    'fr': ["📖 Manuel", "📊 Budget", "📚 Base de connaissances", "🔧 Outils", "👨‍💻 Ingénieur numérique"],
+    'es': ["📖 Instrucción", "📊 Presupuesto", "📚 Base de conocimiento", "🔧 Herramientas", "👨‍💻 Ingeniero digital"],
+    'it': ["📖 Istruzione", "📊 Budget", "📚 Base di conoscenza", "🔧 Strumenti", "👨‍💻 Ingegnere digitale"],
+    'ro': ["📖 Instrucțiuni", "📊 Buget", "📚 Bază de cunoștințe", "🔧 Instrumente", "👨‍💻 Inginer digital"],
+    'bg': ["📖 Инструкция", "📊 Бюджет", "📚 База знания", "🔧 Инструменти", "👨‍💻 Цифрови инженер"],
+    'lt': ["📖 Instrukcija", "📊 Biudžetas", "📚 Žinių bazė", "🔧 Įrankiai", "👨‍💻 Skaitmeninis inžinierius"],
+    'hr': ["📖 Upute", "📊 Proračun", "📚 Baza znanja", "🔧 Alati", "👨‍💻 Digitalni inženjer"],
+    'hu': ["📖 Útmutató", "📊 Költségvetés", "📚 Tudásbázis", "🔧 Eszközök", "👨‍💻 Digitális mérnök"],
+    'cs': ["📖 Návod", "📊 Rozpočet", "📚 Znalostní báze", "🔧 Nástroje", "👨‍💻 Digitální inženýr"],
+    'da': ["📖 Instruktion", "📊 Budget", "📚 Vidensbase", "🔧 Værktøjer", "👨‍💻 Digital ingeniør"],
+    'pt': ["📖 Instrução", "📊 Orçamento", "📚 Base de conhecimento", "🔧 Ferramentas", "👨‍💻 Engenheiro digital"],
+    'tr': ["📖 Talimat", "📊 Bütçe", "📚 Bilgi tabanı", "🔧 Araçlar", "👨‍💻 Dijital mühendis"],
+    'el': ["📖 Οδηγίες", "📊 Προϋπολογισμός", "📚 Βάση γνώσεων", "🔧 Εργαλεία", "👨‍💻 Ψηφιακός μηχανικός"],
+    'sr': ["📖 Упутство", "📊 Буџет", "📚 База знања", "🔧 Алатке", "👨‍💻 Дигитални инжењер"],
+    'nl': ["📖 Instructie", "📊 Begroting", "📚 Kennisbank", "🔧 Hulpmiddelen", "👨‍💻 Digitale ingenieur"],
+    'et': ["📖 Juhised", "📊 Eelarve", "📚 Teadmistebaas", "🔧 Tööriistad", "👨‍💻 Digitaalne insener"],
+    'lv': ["📖 Instrukcija", "📊 Budžets", "📚 Zināšanu bāze", "🔧 Rīki", "👨‍💻 Digitālais inženieris"]
 }
