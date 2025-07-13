@@ -1,6 +1,11 @@
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackContext, MessageHandler, Filters
 from menu.menu_text import menus  # импорт меню по языкам
+from config.config import (
+    TELEGRAM_BOT_TOKEN, TELEGRAM_ADMIN_IDS, DEFAULT_LANGUAGE,
+    DROPBOX_TOKEN, GOOGLE_API_KEY, OPENAI_API_KEY, WHATSAPP_TOKEN,
+    WEBAPP_URL
+)
 
 # ✅ Стартовая функция
 def start(update: Update, context: CallbackContext):
@@ -36,10 +41,7 @@ def handle_text(update: Update, context: CallbackContext):
 
 # ✅ Главная функция запуска
 def main():
-    # 🔐 Укажи свой Telegram токен
-    TOKEN = 'YOUR_BOT_TOKEN_HERE'
-
-    updater = Updater(TOKEN, use_context=True)
+    updater = Updater(TELEGRAM_BOT_TOKEN, use_context=True)
     dp = updater.dispatcher
 
     # Команды
