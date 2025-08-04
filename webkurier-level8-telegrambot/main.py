@@ -1,0 +1,2 @@
+from prices import register_price_handlers
+register_price_handlers(application)
