@@ -51,4 +51,4 @@ async def price_selected(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Регистрация хендлеров
 def register_price_handlers(application):
     application.add_handler(CommandHandler("цены", prices))
-    application.add_handler(CallbackQueryHandler(price_selected))
+    application.add_handler(CallbackQueryHandler(price_selected))cp prices.py yourbot/handlers/
